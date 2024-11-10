@@ -1,13 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import logo from '../../assets/plain-talk-post-logo.png'; // Importing the image
-import './Navbar.css'; // Uncommenting this if you have styles here
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css"; // Uncommenting this if you have styles here
 
 const Navbar = () => {
   return (
-    <nav className="navbar">
+    <nav id="navbar">
       <div className="navbar-logo">
-        <img src={logo} alt="Plain Talk Post Logo" /> {/* Adding alt attribute */}
+        <img src="img/plain-talk-post-logo.png" alt="Plain Talk Post Logo" />{" "}
+        {/* Adding alt attribute */}
       </div>
       <ul className="navbar-links">
         <li>
