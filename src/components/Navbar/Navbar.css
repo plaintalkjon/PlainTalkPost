@@ -1,0 +1,29 @@
+/* Navbar.css */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--background-color); /* Example variable */
+  }
+  
+  .navbar-logo img {
+    height: 50px;
+  }
+  
+  .navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .navbar-links a {
+    text-decoration: none;
+    color: var(--text-color);
+  }
+  
+  .navbar-links a:hover {
+    color: var(--hover-color);
+  }
+  
