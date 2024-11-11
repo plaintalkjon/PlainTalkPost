@@ -1,0 +1,53 @@
+
+.user-card {
+    margin-top: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+    height: 60px;
+    min-width: 92%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 5px;
+    border: solid 2px var(--text-color);
+  
+  }
+  
+  .profile-picture {
+    border-radius: 5px;
+    object-fit: cover;
+    width: 50px;
+    height: 50px;
+    position: relative;
+    object-fit: cover;
+  }
+  
+  .activeUserCard {
+    background-color: var(--tidbits-color);
+  }
+  
+  .userCard:hover {
+    background-color: var(--tidbits-color);
+    cursor: pointer; /* Show that the image is clickable */
+  }
+  
+  .follow-feed-button {
+    background-color: var(--text-color);
+    color: #000000;
+    border-radius: 8px; /* Slightly more rounded for a friendly look */
+    padding: 4px 8px; /* Provides more space for text */
+    cursor: pointer; /* Makes it clear that it’s clickable */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: background-color 0.2s, box-shadow 0.2s; /* Smooth transition for hover */
+    height: 30px;
+  }
+  
+  /* Hover effect to make it pop */
+  .follow-feed-button:hover {
+    background-color: var(
+      --text
+    ); /* Swap background and text colors for contrast */
+    color: var(--tidbits);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+  }

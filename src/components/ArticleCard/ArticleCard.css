@@ -1,0 +1,94 @@
+.left {
+  border-left: 4px solid var(--left-bias-color);
+  border-radius: 5px;
+}
+.leanleft {
+  border-left: 4px solid var(--leanleft-bias-color);
+  border-radius: 5px;
+}
+.center {
+  border-left: 4px solid var(--center-bias-color);
+  border-radius: 5px;
+}
+.leanright {
+  border-left: 4px solid var(--leanright-bias-color);
+  border-radius: 5px;
+}
+.right {
+  border-left: 4px solid var(--right-bias-color);
+  border-radius: 5px;
+}
+.substack {
+  border-left: 4px solid var(--substack-bias-color);
+  border-radius: 5px;
+}
+
+.article-card {
+  background-color: var(--background);
+  margin: 0px;
+  padding-left: 6px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tidbits-container {
+  display: flex;
+}
+
+.content-video-container {
+  display: none; /* Initially hidden */
+  margin-top: 10px;
+}
+
+.dropdown-link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+iframe {
+  width: 100%; /* Full width of the container */
+  height: auto; /* Adjust height proportionally */
+  aspect-ratio: 16 / 9; /* Maintains a 16:9 aspect ratio */
+  max-width: 560px; /* Optional: limit the maximum width */
+}
+
+.tidbits {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--tidbits-color);
+  border-radius: 7px;
+  padding: 6px;
+  height: 20px;
+  text-wrap: nowrap; /*Prevents text from popping out of tidbits on mobile*/
+  font-size: 14px;
+  margin-right: 6px; /* Spacing  for tidbits */
+}
+
+/* Buttons */
+.tidbits button {
+  display: flex;
+  border-radius: 10px;
+  height: 30px;
+  width: 30px;
+  border: none;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--tidbits-color);
+}
+
+.tidbits-button-upvote img,
+.tidbits-button-bump img {
+  height: 23px;
+  width: 23px;
+  margin: 0;
+  padding: 0;
+}
+
+.tidbits-follow-img {
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+  margin-right: 3px;
+}

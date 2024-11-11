@@ -11,6 +11,11 @@ button {
 #filters-container {
     margin: 0px 10px 10px 10px;
     color: var(--text-color);
+    min-width: 125px;
+}
+
+.filter-section {
+    margin: 10px 5px;
 }
 
 .filter-link {

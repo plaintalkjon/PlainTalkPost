@@ -4,9 +4,10 @@
   align-items: center;
   background-color: var(--background-color); /* Example variable */
   padding: 0 1rem; /* More flexible padding */
-  max-width: 1400px; /* Optional: keep a max width */
+  max-width: 1500px; /* Optional: keep a max width */
   width: 100%; /* Full width for responsiveness */
   margin: auto; /* Center the navbar within its container */
+  border-bottom: 2px solid var(--text-color);
 }
 
 .navbar-logo img {
@@ -19,11 +20,6 @@
   gap: 1rem;
 }
 
-.navbar-links a {
-  text-decoration: none;
-  color: var(--text-color);
-}
-
 .navbar-links a:hover {
-  color: var(--hover-color);
+  color: var(--accent-color);
 }

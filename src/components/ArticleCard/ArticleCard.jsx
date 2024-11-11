@@ -1,6 +1,12 @@
-import React from 'react';
+import React from "react";
+import "./ArticleCard.css";
 
-const ArticleCard = ({ article, userLikes = [], userSources = [], userBumps = []  }) => {
+const ArticleCard = ({
+  article,
+  userLikes = [],
+  userSources = [],
+  userBumps = [],
+}) => {
   const {
     content_id,
     title,
@@ -11,26 +17,34 @@ const ArticleCard = ({ article, userLikes = [], userSources = [], userBumps = []
     sources,
     category,
     politicalbias,
-    publicationtype
+    publicationtype,
   } = article;
 
-  const companyname = media_type === "Article"
-    ? link.includes("www.") ? link.split("www.")[1].split("/")[0] : link.split("//")[1].split("/")[0]
-    : sources.name;
+  const companyname =
+    media_type === "Article"
+      ? link.includes("www.")
+        ? link.split("www.")[1].split("/")[0]
+        : link.split("//")[1].split("/")[0]
+      : sources.name;
 
   const timeDifference = Math.abs(new Date() - new Date(datetime));
-  const timeHTML = timeDifference >= 36e5
-    ? `${Math.floor(timeDifference / 36e5)} hr. ago`
-    : `${Math.floor(timeDifference / 6e4)} min. ago`;
+  const timeHTML =
+    timeDifference >= 36e5
+      ? `${Math.floor(timeDifference / 36e5)} hr. ago`
+      : `${Math.floor(timeDifference / 6e4)} min. ago`;
 
   const isFollowingSource = userSources.includes(sources.sources_id);
   const upvoted = userLikes.includes(content_id);
   const bumped = userBumps.includes(content_id);
 
   return (
-    <div id={content_id} className={`${politicalbias} card`}>
+    <div id={content_id} className={`${sources.politicalbias} article-card`}>
       {media_type === "Article" ? (
-        <h4><a href={link} target="_blank" rel="noopener noreferrer">{title}</a></h4>
+        <h4>
+          <a href={link} target="_blank" rel="noopener noreferrer">
+            {title}
+          </a>
+        </h4>
       ) : (
         <div>
           <h4>{title}</h4>
@@ -45,24 +59,28 @@ const ArticleCard = ({ article, userLikes = [], userSources = [], userBumps = []
           </div>
         </div>
       )}
-      <p className="description">{description}</p>
+      <p className="article-description">{description}</p>
 
-      <div className="contenttidbits">
-        <div className="tidbits tidbitsbuttondiv">
-          <button className="ratebutton">
+      <div className="tidbits-container">
+        <div className="tidbits">
+          <button className="tidbits-button-upvote">
             <img
-              className={`ratebuttonimg ${upvoted ? 'clicked' : ''}`}
-              src={`/public/img/${upvoted ? 'up-filled.png' : 'up-outline.png'}`}
+              className={`tidbits-upvote-img ${upvoted ? "clicked" : ""}`}
+              src={`/public/img/${
+                upvoted ? "up-filled.png" : "up-outline.png"
+              }`}
               alt="upvote"
             />
           </button>
         </div>
 
-        <div className="tidbits tidbitsbuttondiv">
-          <button className="bumpedbutton">
+        <div className="tidbits">
+          <button className="tidbits-button-bump">
             <img
-              className="bumpedbuttonimg"
-              src={`/public/img/${bumped ? 'bumped-filled.svg' : 'bumped-outline.svg'}`}
+              className="tidbits-bump-img"
+              src={`/public/img/${
+                bumped ? "bumped-filled.svg" : "bumped-outline.svg"
+              }`}
               alt="bump status"
             />
           </button>
@@ -74,16 +92,40 @@ const ArticleCard = ({ article, userLikes = [], userSources = [], userBumps = []
 
         <div className="tidbits">
           <img
-            className={`followbutton followsource heart-outline ${isFollowingSource ? 'clicked' : ''}`}
-            src={`/public/img/${isFollowingSource ? 'heart-filled.svg' : 'heart-outline.svg'}`}
+            className={`tidbits-follow-img ${
+              isFollowingSource ? "clicked" : ""
+            }`}
+            src={`/public/img/${
+              isFollowingSource
+                ? "following-source-img.svg"
+                : "follow-source-img.svg"
+            }`}
             alt={isFollowingSource ? "unfollow source" : "follow source"}
           />
-          <a className="source" href={`https://www.${companyname}`} target="_blank" rel="noopener noreferrer">{companyname}</a>
+          <a
+            className="tidbits-company-name"
+            href={`https://www.${companyname}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {companyname}
+          </a>
         </div>
 
-        <div className="tidbits"><p>{publicationtype}</p></div>
-        <div className="tidbits"><p>{media_type}</p></div>
-        {category && <div className="tidbits"><p>{category}</p></div>}
+        <div className="tidbits">
+          <p>{sources.publicationtype}</p>
+        </div>
+
+        <div className="tidbits">
+          <p>{media_type}</p>
+        </div>
+
+        {category && (
+          <div className="tidbits">
+            <p>{category}</p>
+          </div>
+        )}
+        
       </div>
     </div>
   );

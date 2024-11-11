@@ -39,6 +39,14 @@ const Home = () => {
         <ArticleFilters filters={filters} setFilters={setFilters} />
       </div>
       <div className="column home-column-center">
+        <div id="home-column-center-filters">
+          <div
+            class="center-column-filter-not-logged-in activeUserCard"
+            id="all-feeds-link"
+          >
+            <p>Show All</p>
+          </div>
+        </div>
         {/* Pass articles and loading state to ArticleDisplayColumn */}
         <ArticleDisplayColumn articles={articles} loading={loading} />
       </div>

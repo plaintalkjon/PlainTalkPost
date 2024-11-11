@@ -1,6 +1,7 @@
 // src/components/RecommendedFeeds.jsx
 import React, { useState, useEffect } from 'react';
 import { userIdToRecommendedFeeds } from '../../services/userServices.js';
+import './RecommendedFeeds.css';
 
 const RecommendedFeeds = ({ userId }) => {
   const [recommendedFeeds, setRecommendedFeeds] = useState([]);
@@ -21,7 +22,7 @@ const RecommendedFeeds = ({ userId }) => {
 
   return (
     <div className="recommended-feeds">
-      <h5>Recommended Feeds</h5>
+      <h5 className="heading">Recommended Feeds</h5>
       <ul>
         {recommendedFeeds.map((feed, index) => (
           <li className="user-card" key={index}>

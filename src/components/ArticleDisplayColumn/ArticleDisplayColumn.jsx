@@ -1,5 +1,6 @@
 import React from 'react';
 import ArticleCard from '../ArticleCard/ArticleCard';
+import './ArticleDisplayColumn.css';
 
 const ArticleDisplayColumn = ({ articles, loading, userLikes, userSources, userBumps }) => {
   if (loading) return <p>Loading...</p>;

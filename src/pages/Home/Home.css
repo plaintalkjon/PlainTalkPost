@@ -1,15 +1,49 @@
 #home-columns-container {
     display: flex;
     flex-direction: row;
-    width: 100vw;
-    display: flex;
     justify-content: center;
+    max-width: 1000px;
+    min-width: 80vw;
+    margin: 0 auto; 
+    gap: 10px;
 }
+
 
 #home-column-right {
     width: 300px;
     max-width: 300px;
-    border-left: 2px solid var(--text);
+    border-left: 2px solid var(--text-color);
     padding: 0px 5px 5px 5px;
     position: relative;
 }
+
+
+#home-column-center-filters {
+    display: flex;
+    flex-direction: row; /* Change to column layout */
+    height: 85px; /* Increase the minimum height to fit 3 items */
+    justify-content: space-around; /* Space the items evenly */
+    gap: 10px;
+    margin: 0px;
+  }
+  
+  .center-column-filter {
+    display: flex;
+    flex: 1; /* Each filter takes up equal height */
+    border: 2px solid var(--text-color);
+    border-radius: 5px;
+    justify-content: space-around;
+    align-items: center;
+    margin: 10px 0; /* Add space between filters */
+  }
+  
+  .center-column-filter-not-logged-in {
+    display: flex;
+    flex: 1; /* Each filter takes up equal height */
+    border: 2px solid var(--text-color);
+    justify-content: space-around;
+    align-items: center;
+    margin: 10px 0; /* Add space between filters */
+    border-radius: 5px;
+  
+  }
