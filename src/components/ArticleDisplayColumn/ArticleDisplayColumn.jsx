@@ -65,31 +65,18 @@ const ArticleDisplayColumn = ({ filters }) => {
   };
 
 
-  
-
   // Manages the three filter options in the Article Display Column
   useEffect(() => {
     const fetchFilteredArticles = async () => {
       setLoading(true);
-      let results;
-
-      if (filter === "yourFeed" && user) {
-        results = await fetchArticles({
-          ...filters,
-          sources: userSources,
-          followedBumpedContent: [],
-        });
-      } else if (filter === "bumped" && user) {
-        const followedBumpedContent = await fetchBumpsByUserId(user.id);
-        results = await fetchArticles({
-          ...filters,
-          sources: [],
-          bumps: followedBumpedContent,
-        });
-      } else {
-        // Default case for "all" filter
-        results = await fetchArticles(filters); // Fetch all articles without user-specific filters
-      }
+      const options = {
+        ...filters,
+        sources: filter === "yourFeed" && user ? userSources : [],
+        bumps: filter === "bumped" && user ? await fetchBumpsByUserId(user.id) : [],
+      };
+  
+      const results = await fetchArticles(options);
+  
       setArticles(results);
       setLoading(false);
     };

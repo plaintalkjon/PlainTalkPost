@@ -24,7 +24,8 @@ const ArticleCard = ({
   );
   const [isUpvoted, setIsUpvoted] = useState(
     userUpvotes.includes(article.content_id)
-  ); // Track upvoted state
+  );
+
 
   // Update states based on props when they change
   useEffect(() => {
@@ -84,6 +85,7 @@ const ArticleCard = ({
     }
 
     setIsUpvoted((prev) => !prev);
+    onUpvoteChange(article.sources_id, !isUpvoted); // Pass updated follow state to parent
 
     try {
       const response = await upvoteContent(user.id, content_id);
@@ -104,6 +106,7 @@ const ArticleCard = ({
 
     // Optimistically update the UI
     setIsBumped((prev) => !prev);
+    onBumpChange(article.content_id, !isBumped); // Pass updated follow state to parent
 
     try {
       const response = await bumpContent(user.id, content_id);
@@ -112,6 +115,7 @@ const ArticleCard = ({
       console.error("Error bumping content:", error);
       // Revert the state if the request fails
       setIsBumped((prev) => !prev);
+      onBumpChange(article.content_id, !isBumped); // Pass updated follow state to parent
     }
   };
 

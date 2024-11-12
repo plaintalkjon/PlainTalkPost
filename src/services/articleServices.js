@@ -2,7 +2,7 @@
 import supabase from '../utility/SupabaseClient';
 
 export const fetchArticles = async (filters) => {
-// Example using `sources!inner` for an inner join and ensuring all filters are scoped correctly
+
 let query = supabase.from('content')
   .select(`
     title,
@@ -37,12 +37,16 @@ if (filters.publication) {
   query = query.eq('sources.publicationtype', filters.publication);
 }
 
-if (filters.sources && filters.sources.length > 0) {
-  query = query.in("sources_id", filters.sources); // Use sources_id and pass an array
+if (filters.sources.length > 0) {
+  query = query.in("sources_id", filters.sources);
 }
 
-if (filters.bumps && filters.bumps.length > 0) {
-  query = query.in("content_id", filters.bumps); // Pass bumps array directly
+if (filters.bumps.length > 0) {
+  query = query.in("content_id", filters.bumps);
+}
+
+if (filters.loadedContentIds && filters.loadedContentIds.length > 0) {
+  query = query.not('content_id', 'in', filters.loadedContentIds);
 }
 
   const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -51,7 +55,7 @@ if (filters.bumps && filters.bumps.length > 0) {
   const sortColumn = filters.sort === 'latest' ? 'datetime' : 'upvotes';
   query = query.order(sortColumn, { ascending: false });
 
-  // Limit the number of articles fetched
+  // Sets limit to 10 articles
   query = query.limit(10);
 
   const { data, error } = await query;
