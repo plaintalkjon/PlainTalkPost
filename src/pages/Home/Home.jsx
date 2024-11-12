@@ -1,54 +1,30 @@
 // src/pages/Home.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./Home.css";
 import ArticleFilters from "../../components/ArticleFilters/ArticleFilters.jsx";
 import ArticleDisplayColumn from "../../components/ArticleDisplayColumn/ArticleDisplayColumn.jsx";
 import SearchBar from "../../components/SearchBar/SearchBar.jsx";
 import YourFollowedFeeds from "../../components/YourFollowedFeeds/YourFollowedFeeds.jsx";
 import RecommendedFeeds from "../../components/RecommendedFeeds/RecommendedFeeds.jsx";
-import { fetchArticles } from "../../services/articleServices.js";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 
 const Home = () => {
-  // State for filters and articles
+  const { user } = useAuth();
   const [filters, setFilters] = useState({
     sort: "trending",
-    mediaType: "all",
-    bias: "all",
-    publication: "all",
-    category: "all",
+    mediaType: null,
+    bias: null,
+    publication: null,
+    category: null,
   });
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // Fetch articles whenever filters change
-  useEffect(() => {
-    const getArticles = async () => {
-      setLoading(true);
-      const fetchedArticles = await fetchArticles(filters);
-      setArticles(fetchedArticles);
-      setLoading(false);
-    };
-
-    getArticles();
-  }, [filters]); // Dependency array ensures useEffect runs whenever filters change
 
   return (
     <div id="home-columns-container">
-      <div className="column home-column-left">
-        {/* Pass filters and setFilters to allow updating from ArticleFilters */}
+      <div id="home-column-left" className="column home-column-left">
         <ArticleFilters filters={filters} setFilters={setFilters} />
       </div>
-      <div className="column home-column-center">
-        <div id="home-column-center-filters">
-          <div
-            class="center-column-filter-not-logged-in activeUserCard"
-            id="all-feeds-link"
-          >
-            <p>Show All</p>
-          </div>
-        </div>
-        {/* Pass articles and loading state to ArticleDisplayColumn */}
-        <ArticleDisplayColumn articles={articles} loading={loading} />
+      <div id="home-column-center" className="column home-column-center">
+        <ArticleDisplayColumn filters={filters} />
       </div>
       <div className="column home-column-right">
         <SearchBar />

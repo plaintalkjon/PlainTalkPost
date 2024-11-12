@@ -1,15 +1,21 @@
 h5 {
     margin: 3px;
+    flex-wrap: nowrap;
 }
 
 button {
     background: none;
     border: none;    
     color: var(--text-color);
+    display: flex;         /* Make button a flex container */
+    flex-wrap: nowrap;     /* Ensure no wrapping within flex container */
+    overflow: hidden;      /* Hide overflow if content exceeds button size */
+    white-space: nowrap;   /* Prevent text from wrapping within the button */
 }
 
+
 #filters-container {
-    margin: 0px 10px 10px 10px;
+    margin: 0px 0px 10px 10px;
     color: var(--text-color);
     min-width: 125px;
 }

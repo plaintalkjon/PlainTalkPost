@@ -1,12 +1,38 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext"; // Access authenticated user
+import { toggleFollowSource } from "../../services/followServices"; // Import service functions
+import { bumpContent, upvoteContent } from "../../services/contentServices";
 import "./ArticleCard.css";
 
 const ArticleCard = ({
   article,
-  userLikes = [],
+  userUpvotes = [], // Add userUpvotes prop
   userSources = [],
   userBumps = [],
+  onFollowChange,
+  onBumpChange,
+  onUpvoteChange,
 }) => {
+  const { user } = useAuth();
+
+  const [isFollowing, setIsFollowing] = useState(
+    userSources.includes(article.sources_id)
+  );
+
+  const [isBumped, setIsBumped] = useState(
+    userBumps.includes(article.content_id)
+  );
+  const [isUpvoted, setIsUpvoted] = useState(
+    userUpvotes.includes(article.content_id)
+  ); // Track upvoted state
+
+  // Update states based on props when they change
+  useEffect(() => {
+    setIsFollowing(userSources.includes(article.sources_id));
+    setIsBumped(userBumps.includes(article.content_id));
+    setIsUpvoted(userUpvotes.includes(article.content_id));
+  }, [userSources, userBumps, userUpvotes]);
+
   const {
     content_id,
     title,
@@ -16,8 +42,6 @@ const ArticleCard = ({
     media_type,
     sources,
     category,
-    politicalbias,
-    publicationtype,
   } = article;
 
   const companyname =
@@ -33,9 +57,73 @@ const ArticleCard = ({
       ? `${Math.floor(timeDifference / 36e5)} hr. ago`
       : `${Math.floor(timeDifference / 6e4)} min. ago`;
 
-  const isFollowingSource = userSources.includes(sources.sources_id);
-  const upvoted = userLikes.includes(content_id);
-  const bumped = userBumps.includes(content_id);
+  // Optimistic UI For Following Sources
+  const handleFollowClick = async () => {
+    if (!user) {
+      console.warn("User not authenticated");
+      return;
+    }
+
+    setIsFollowing((prev) => !prev); // Optimistically update UI
+    onFollowChange(article.sources_id, !isFollowing); // Pass updated follow state to parent
+
+    try {
+      await toggleFollowSource(user.id, article.sources_id);
+    } catch (error) {
+      setIsFollowing((prev) => !prev); // Revert state if error
+      onFollowChange(article.sources_id, !isFollowing); // Pass updated follow state to parent
+      console.error("Error following/unfollowing source:", error);
+    }
+  };
+
+  // Optimistic UI For Upvoting Content
+  const handleUpvoteClick = async () => {
+    if (!user) {
+      console.warn("User not authenticated");
+      return;
+    }
+
+    setIsUpvoted((prev) => !prev);
+
+    try {
+      const response = await upvoteContent(user.id, content_id);
+      console.log(response.message);
+    } catch (error) {
+      console.error("Error upvoting content:", error);
+      // Revert the state if the request fails
+      setIsUpvoted((prev) => !prev);
+    }
+  };
+
+  // Optimistic UI For Bumping Content
+  const handleBumpClick = async () => {
+    if (!user) {
+      console.warn("User not authenticated");
+      return;
+    }
+
+    // Optimistically update the UI
+    setIsBumped((prev) => !prev);
+
+    try {
+      const response = await bumpContent(user.id, content_id);
+      console.log(response.message);
+    } catch (error) {
+      console.error("Error bumping content:", error);
+      // Revert the state if the request fails
+      setIsBumped((prev) => !prev);
+    }
+  };
+
+  const [showVideo, setShowVideo] = useState(false);
+
+  // Toggle video display
+  const toggleVideo = () => {
+    setShowVideo((prev) => {
+      console.log("Toggling showVideo:", !prev); // Debugging statement
+      return !prev;
+    });
+  };
 
   return (
     <div id={content_id} className={`${sources.politicalbias} article-card`}>
@@ -47,8 +135,10 @@ const ArticleCard = ({
         </h4>
       ) : (
         <div>
-          <h4>{title}</h4>
-          <div className="content-video-container">
+          <h4 style={{ cursor: "pointer" }} onClick={toggleVideo}>
+            {title}
+          </h4>
+          <div className={`content-video-container ${showVideo ? "show" : ""}`}>
             <iframe
               src={`https://www.youtube.com/embed/${link.split("v=")[1]}`}
               title={title}
@@ -63,23 +153,21 @@ const ArticleCard = ({
 
       <div className="tidbits-container">
         <div className="tidbits">
-          <button className="tidbits-button-upvote">
+          <button className="tidbits-button-upvote" onClick={handleUpvoteClick}>
             <img
-              className={`tidbits-upvote-img ${upvoted ? "clicked" : ""}`}
-              src={`/public/img/${
-                upvoted ? "up-filled.png" : "up-outline.png"
-              }`}
+              className={`tidbits-upvote-img ${isUpvoted ? "clicked" : ""}`}
+              src={`/img/${isUpvoted ? "up-filled.png" : "up-outline.png"}`}
               alt="upvote"
             />
           </button>
         </div>
 
         <div className="tidbits">
-          <button className="tidbits-button-bump">
+          <button className="tidbits-button-bump" onClick={handleBumpClick}>
             <img
-              className="tidbits-bump-img"
-              src={`/public/img/${
-                bumped ? "bumped-filled.svg" : "bumped-outline.svg"
+              className={`tidbits-bump-img ${isBumped ? "clicked" : ""}`}
+              src={`/img/${
+                isBumped ? "bumped-filled.svg" : "bumped-outline.svg"
               }`}
               alt="bump status"
             />
@@ -92,15 +180,12 @@ const ArticleCard = ({
 
         <div className="tidbits">
           <img
-            className={`tidbits-follow-img ${
-              isFollowingSource ? "clicked" : ""
+            className={`tidbits-follow-img ${isFollowing ? "clicked" : ""}`}
+            src={`/img/${
+              isFollowing ? "following-source-img.svg" : "follow-source-img.svg"
             }`}
-            src={`/public/img/${
-              isFollowingSource
-                ? "following-source-img.svg"
-                : "follow-source-img.svg"
-            }`}
-            alt={isFollowingSource ? "unfollow source" : "follow source"}
+            alt={isFollowing ? "unfollow source" : "follow source"}
+            onClick={handleFollowClick}
           />
           <a
             className="tidbits-company-name"
@@ -125,7 +210,6 @@ const ArticleCard = ({
             <p>{category}</p>
           </div>
         )}
-        
       </div>
     </div>
   );

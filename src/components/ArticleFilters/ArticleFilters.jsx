@@ -38,23 +38,23 @@ const ArticleFilters = ({ filters, setFilters }) => {
       <div id="media-filter" className="filter-section">
         <h5>Media Type</h5>
         <button
-          onClick={() => handleFilterChange('mediaType', 'all')}
+          onClick={() => handleFilterChange('mediaType', null)}
           id="media-filter-all"
-          className={`media-link ${filters.mediaType === 'all' ? 'active' : ''}`}
+          className={`media-link ${filters.mediaType === null ? 'active' : ''}`}
         >
           All Media
         </button>
         <button
-          onClick={() => handleFilterChange('mediaType', 'articles')}
+          onClick={() => handleFilterChange('mediaType', 'Article')}
           id="media-filter-articles"
-          className={`media-link ${filters.mediaType === 'articles' ? 'active' : ''}`}
+          className={`media-link ${filters.mediaType === 'Article' ? 'active' : ''}`}
         >
           Articles
         </button>
         <button
-          onClick={() => handleFilterChange('mediaType', 'videos')}
+          onClick={() => handleFilterChange('mediaType', 'Video')}
           id="media-filter-videos"
-          className={`media-link ${filters.mediaType === 'videos' ? 'active' : ''}`}
+          className={`media-link ${filters.mediaType === 'Video' ? 'active' : ''}`}
         >
           Videos
         </button>
@@ -63,9 +63,9 @@ const ArticleFilters = ({ filters, setFilters }) => {
       <div id="bias-filter" className="filter-section">
         <h5>Political Bias</h5>
         <button
-          onClick={() => handleFilterChange('bias', 'all')}
+          onClick={() => handleFilterChange('bias', null)}
           id="bias-filter-all"
-          className={`filter-link balanced ${filters.bias === 'all' ? 'active' : ''}`}
+          className={`filter-link balanced ${filters.bias === null ? 'active' : ''}`}
         >
           All Bias
         </button>
@@ -77,9 +77,9 @@ const ArticleFilters = ({ filters, setFilters }) => {
           Left
         </button>
         <button
-          onClick={() => handleFilterChange('bias', 'leanLeft')}
+          onClick={() => handleFilterChange('bias', 'leanleft')}
           id="bias-filter-leanleft"
-          className={`filter-link leanleft ${filters.bias === 'leanLeft' ? 'active' : ''}`}
+          className={`filter-link leanleft ${filters.bias === 'leanleft' ? 'active' : ''}`}
         >
           Left Lean
         </button>
@@ -91,9 +91,9 @@ const ArticleFilters = ({ filters, setFilters }) => {
           Center
         </button>
         <button
-          onClick={() => handleFilterChange('bias', 'leanRight')}
+          onClick={() => handleFilterChange('bias', 'leanright')}
           id="bias-filter-leanright"
-          className={`filter-link leanright ${filters.bias === 'leanRight' ? 'active' : ''}`}
+          className={`filter-link leanright ${filters.bias === 'leanright' ? 'active' : ''}`}
         >
           Right Lean
         </button>
@@ -109,23 +109,23 @@ const ArticleFilters = ({ filters, setFilters }) => {
       <div id="publication-filter" className="filter-section">
         <h5>Publications</h5>
         <button
-          onClick={() => handleFilterChange('publication', 'all')}
+          onClick={() => handleFilterChange('publication', null)}
           id="publication-filter-all"
-          className={`publications-link all ${filters.publication === 'all' ? 'active' : ''}`}
+          className={`publications-link all ${filters.publication === null ? 'active' : ''}`}
         >
           All
         </button>
         <button
-          onClick={() => handleFilterChange('publication', 'indie')}
+          onClick={() => handleFilterChange('publication', 'Indie')}
           id="publication-filter-indie"
-          className={`publications-link indie ${filters.publication === 'indie' ? 'active' : ''}`}
+          className={`publications-link indie ${filters.publication === 'Indie' ? 'active' : ''}`}
         >
           Indie
         </button>
         <button
-          onClick={() => handleFilterChange('publication', 'mainstream')}
+          onClick={() => handleFilterChange('publication', 'Mainstream')}
           id="publication-filter-mainstream"
-          className={`publications-link mainstream ${filters.publication === 'mainstream' ? 'active' : ''}`}
+          className={`publications-link mainstream ${filters.publication === 'Mainstream' ? 'active' : ''}`}
         >
           Mainstream
         </button>
@@ -134,39 +134,39 @@ const ArticleFilters = ({ filters, setFilters }) => {
       <div id="category-filter" className="filter-section">
         <h5>Categories</h5>
         <button
-          onClick={() => handleFilterChange('category', 'all')}
+          onClick={() => handleFilterChange('category', null)}
           id="category-filter-all"
-          className={`categories-link all-categories ${filters.category === 'all' ? 'active' : ''}`}
+          className={`categories-link all-categories ${filters.category === null ? 'active' : ''}`}
         >
           All
         </button>
         <button
-          onClick={() => handleFilterChange('category', 'politics')}
+          onClick={() => handleFilterChange('category', 'Politics & Policy')}
           id="category-filter-politics"
-          className={`categories-link politics ${filters.category === 'politics' ? 'active' : ''}`}
+          className={`categories-link politics ${filters.category === 'Politics & Policy' ? 'active' : ''}`}
         >
-          Politics
+          Politics & Policy
         </button>
         <button
-          onClick={() => handleFilterChange('category', 'economy')}
+          onClick={() => handleFilterChange('category', 'Economy & Business')}
           id="category-filter-economy"
-          className={`categories-link economy ${filters.category === 'economy' ? 'active' : ''}`}
+          className={`categories-link economy ${filters.category === 'Economy & Business' ? 'active' : ''}`}
         >
-          Economy
+          Economy & Business
         </button>
         <button
-          onClick={() => handleFilterChange('category', 'international')}
+          onClick={() => handleFilterChange('category', 'International')}
           id="category-filter-international"
-          className={`categories-link international ${filters.category === 'international' ? 'active' : ''}`}
+          className={`categories-link international ${filters.category === 'International' ? 'active' : ''}`}
         >
           International
         </button>
         <button
-          onClick={() => handleFilterChange('category', 'tech')}
+          onClick={() => handleFilterChange('category', 'Tech & Science')}
           id="category-filter-tech"
-          className={`categories-link tech-categories ${filters.category === 'tech' ? 'active' : ''}`}
+          className={`categories-link tech-categories ${filters.category === 'Tech & Science' ? 'active' : ''}`}
         >
-          Science
+          Tech & Science
         </button>
       </div>
     </div>

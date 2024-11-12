@@ -8,6 +8,10 @@
     gap: 10px;
 }
 
+#home-column-left {
+  width: 200px;
+}
+
 
 #home-column-right {
     width: 300px;
@@ -15,6 +19,10 @@
     border-left: 2px solid var(--text-color);
     padding: 0px 5px 5px 5px;
     position: relative;
+}
+
+#home-column-center {
+  width: 80%;
 }
 
 

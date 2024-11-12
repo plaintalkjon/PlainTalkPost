@@ -1,6 +1,6 @@
 // src/components/RecommendedFeeds.jsx
 import React, { useState, useEffect } from 'react';
-import { userIdToRecommendedFeeds } from '../../services/userServices.js';
+import { fetchRecommendedFeedsByUserId } from '../../services/userServices.js';
 import './RecommendedFeeds.css';
 
 const RecommendedFeeds = ({ userId }) => {
@@ -10,7 +10,7 @@ const RecommendedFeeds = ({ userId }) => {
   useEffect(() => {
     const fetchRecommendedFeeds = async () => {
       setLoading(true);
-      const feeds = await userIdToRecommendedFeeds(userId);
+      const feeds = await fetchRecommendedFeedsByUserId(userId, []);
       setRecommendedFeeds(feeds);
       setLoading(false);
     };

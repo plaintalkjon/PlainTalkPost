@@ -1,14 +1,19 @@
-import { useState } from "react";
-import "./App.css";
-import Navbar from "./components/Navbar/Navbar.jsx";
-import Home from "./pages/Home/Home.jsx";
+// src/App.js
+import React, { useState } from "react";
+import Navbar from "./components/Navbar/Navbar";
+import Home from "./pages/Home/Home";
+import LoginModal from "./components/LoginModal/LoginModal";
+import { AuthProvider } from "./contexts/AuthContext.jsx";
 
 function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
-    <div className="App">
-      <Navbar />
+    <AuthProvider>
+      <Navbar onLoginClick={() => setIsModalOpen(true)} />
+      {isModalOpen && <LoginModal onClose={() => setIsModalOpen(false)} />}
       <Home />
-    </div>
+    </AuthProvider>
   );
 }
 

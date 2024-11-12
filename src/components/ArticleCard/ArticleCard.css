@@ -36,10 +36,6 @@
   display: flex;
 }
 
-.content-video-container {
-  display: none; /* Initially hidden */
-  margin-top: 10px;
-}
 
 .dropdown-link {
   text-decoration: underline;
@@ -91,4 +87,12 @@ iframe {
   height: 18px;
   width: 18px;
   margin-right: 3px;
+}
+
+.content-video-container {
+  display: none;
+}
+
+.content-video-container.show {
+  display: flex; /* or block if you prefer */
 }
