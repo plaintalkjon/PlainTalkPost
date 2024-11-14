@@ -14,28 +14,28 @@ const ArticleDisplayColumn = ({ filters }) => {
   const [filter, setFilter] = useState(user ? "yourFeed" : "all");
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [allLoaded, setAllLoaded] = useState(false);
+  const [loadedContentIds, setLoadedContentIds] = useState([]);
+  const [shouldFetch, setShouldFetch] = useState(false); // New state to control when fetching starts
 
-  // Sets the initial active filter based on whether there is a user
+  // Set initial active filter based on whether there is a user
   useEffect(() => {
-    if (user) {
-      setFilter("yourFeed");
-    } else {
-      setFilter("all");
-    }
+    setFilter(user ? "yourFeed" : "all");
   }, [user]);
 
-  // Handles tracking what each user is following, has bumped, and has upvtoed.
-
+  // Track user actions
   const [userSources, setUserSources] = useState([]);
   const [userBumps, setUserBumps] = useState([]);
   const [userUpvotes, setUserUpvotes] = useState([]);
 
+  
+// Only a logged in user needs this information. This may be removable later if I refresh the page on login.
   useEffect(() => {
     const fetchUserActions = async () => {
       if (user) {
-        const sources = await fetchSourcesByUserId(user.id); // IDs of sources user follows
-        const bumps = await fetchBumpsByUserId(user.id); // IDs of articles user bumped
-        const upvotes = await fetchUpvotesByUserId(user.id); // IDs of articles user upvoted
+        const sources = await fetchSourcesByUserId(user.id);
+        const bumps = await fetchBumpsByUserId(user.id);
+        const upvotes = await fetchUpvotesByUserId(user.id);
         setUserSources(sources);
         setUserBumps(bumps);
         setUserUpvotes(upvotes);
@@ -44,7 +44,7 @@ const ArticleDisplayColumn = ({ filters }) => {
     fetchUserActions();
   }, [user]);
 
-  // Local State Tracking for user Sources, Bumps and Upvote. This helps eliminate repetitive server calls.
+  // Optimistic updates for local state
   const updateUserSources = (sourceId, followed) => {
     setUserSources((prevSources) =>
       followed ? [...prevSources, sourceId] : prevSources.filter((id) => id !== sourceId)
@@ -57,34 +57,57 @@ const ArticleDisplayColumn = ({ filters }) => {
     );
   };
 
-
   const updateUserUpvotes = (contentId, followed) => {
     setUserUpvotes((prevUpvotes) =>
       followed ? [...prevUpvotes, contentId] : prevUpvotes.filter((id) => id !== contentId)
     );
   };
 
-
-  // Manages the three filter options in the Article Display Column
-  useEffect(() => {
-    const fetchFilteredArticles = async () => {
-      setLoading(true);
-      const options = {
-        ...filters,
-        sources: filter === "yourFeed" && user ? userSources : [],
-        bumps: filter === "bumped" && user ? await fetchBumpsByUserId(user.id) : [],
-      };
-  
-      const results = await fetchArticles(options);
-  
-      setArticles(results);
-      setLoading(false);
+  // Function to fetch filtered articles
+  const fetchFilteredArticles = async (append = false) => {
+    setLoading(true);
+    const options = {
+      ...filters,
+      sources: filter === "yourFeed" && user ? userSources : [],
+      bumps: filter === "bumped" && user ? userBumps : [],
+      loadedContentIds,
     };
 
-    fetchFilteredArticles();
+    const results = await fetchArticles(options);
+
+    if (results.length === 0) {
+      setAllLoaded(true);
+    } else {
+      const newContentIds = results.map((article) => article.content_id);
+      setLoadedContentIds((prevIds) => [...prevIds, ...newContentIds]);
+      setArticles((prevArticles) =>
+        append ? [...prevArticles, ...results] : results
+      );
+    }
+    setLoading(false);
+  };
+
+  // Reset articles and loadedContentIds on filter change
+  useEffect(() => {
+    setLoadedContentIds([]); // Clear loaded IDs
+    setAllLoaded(false);
+    setArticles([]); // Clear current articles
+    setShouldFetch(true); // Indicate fetching should begin after reset
   }, [filter, filters, user]);
 
-  if (loading) return <p>Loading...</p>;
+  // Trigger fetch after reset completes
+  useEffect(() => {
+    if (shouldFetch) {
+      fetchFilteredArticles();
+      setShouldFetch(false); // Reset fetch control
+    }
+  }, [shouldFetch]); // Only run when shouldFetch changes
+
+  const handleLoadMore = () => {
+    if (!loading && !allLoaded) {
+      fetchFilteredArticles(true); // Append new results
+    }
+  };
 
   return (
     <div className="articles-display-column">
@@ -134,6 +157,13 @@ const ArticleDisplayColumn = ({ filters }) => {
           onUpvoteChange={updateUserUpvotes}
         />
       ))}
+      {loading && <p>Loading articles...</p>}
+      {allLoaded && <p>All articles loaded</p>}
+      {!allLoaded && !loading && (
+        <button onClick={handleLoadMore} className="load-more-button">
+          Load More
+        </button>
+      )}
     </div>
   );
 };

@@ -44,9 +44,9 @@ if (filters.sources.length > 0) {
 if (filters.bumps.length > 0) {
   query = query.in("content_id", filters.bumps);
 }
-
+console.log(filters.loadedContentIds);
 if (filters.loadedContentIds && filters.loadedContentIds.length > 0) {
-  query = query.not('content_id', 'in', filters.loadedContentIds);
+  query = query.not('content_id', 'in', `(${filters.loadedContentIds})`);
 }
 
   const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
