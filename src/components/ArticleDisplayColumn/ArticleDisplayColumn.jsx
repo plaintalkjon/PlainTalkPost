@@ -24,7 +24,7 @@ const ArticleDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) =
   // Fetch user-specific data
   const fetchUserData = async () => {
     try {
-      const sources = await fetchSourcesByUserId(userId);
+      const sources = await fetchSourcesByUserId(userId); // Keep this outside the promise all OR ELSE a bug occurs that loads all articles instead of Your Feed
       const [bumps, upvotes] = await Promise.all([
         fetchBumpsByUserId(userId),
         fetchUpvotesByUserId(userId),

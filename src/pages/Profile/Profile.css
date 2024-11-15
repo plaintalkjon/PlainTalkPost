@@ -22,8 +22,10 @@
 
 #profile-profile-picture {
     max-width: 300px;
-    border-radius: 50%; /* Optional for rounded profile picture */
-}
+    border-radius: 5px;
+    object-fit: cover;
+    position: relative;
+    object-fit: cover;}
 
 .profile-bumped-articles {
     flex: 1; /* Allows this section to take up remaining space */
