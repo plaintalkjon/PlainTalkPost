@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchFeedsByUserId, fetchUsernameAndProfilePictureByUserId } from "../../services/userServices";
 import { toggleFollowFeed } from "../../services/followServices";
 import { useAuth } from "../../contexts/AuthContext";
+import UserCard from "../UserCard/UserCard";
 import "./YourFollowedFeeds.css";
 
 const YourFollowedFeeds = () => {
@@ -23,8 +24,8 @@ const YourFollowedFeeds = () => {
         // Step 2: Fetch username and profile picture for each feed_id
         const feedDetails = await Promise.all(
           feedIds.map(async (feedId) => {
-            const userData = await fetchUsernameAndProfilePictureByUserId(feedId); // Remove array destructuring
-            return { feed_id: feedId, ...userData }; // Directly use userData
+            const userData = await fetchUsernameAndProfilePictureByUserId(feedId);
+            return { feed_id: feedId, ...userData };
           })
         );
 
@@ -70,21 +71,14 @@ const YourFollowedFeeds = () => {
     <div className="your-followed-feeds">
       <h5 className="heading">Your Followed Feeds</h5>
       <ul>
-        {yourFollowedFeeds.map((feed, index) => (
-          <li className="user-card" key={index}>
-            <img
-              className="profile-picture"
-              src={`https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${feed.profile_picture}`}
-              alt={`${feed.username}'s profile`}
-            />
-            <span>{feed.username}</span>
-            <button
-              className="follow-feed-button"
-              onClick={() => handleFollowToggle(feed.username)}
-            >
-              {followStates[feed.username] ? "Unfollow" : "Follow"}
-            </button>
-          </li>
+        {yourFollowedFeeds.map((feed) => (
+          <UserCard
+            key={feed.feed_id}
+            username={feed.username}
+            profilePicture={feed.profile_picture}
+            isFollowing={followStates[feed.username]}
+            onFollowToggle={() => handleFollowToggle(feed.username)}
+          />
         ))}
       </ul>
     </div>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { fetchFeedsByUserId, fetchRecommendedFeedsByUserIdAndFollowedFeeds } from "../../services/userServices.js";
 import { toggleFollowFeed } from "../../services/followServices.js";
-import "./RecommendedFeeds.css";
 import { useAuth } from "../../contexts/AuthContext";
+import UserCard from "../UserCard/UserCard";
+import "./RecommendedFeeds.css";
 
 const RecommendedFeeds = () => {
   const { user } = useAuth();
@@ -31,7 +32,6 @@ const RecommendedFeeds = () => {
           initialFollowStates[feed.username] = false; // Initially not followed
         });
         setFollowStates(initialFollowStates);
-
       } catch (error) {
         console.error("Error fetching recommended feeds:", error.message);
       }
@@ -64,21 +64,14 @@ const RecommendedFeeds = () => {
     <div className="recommended-feeds">
       <h5 className="heading">Recommended Feeds</h5>
       <ul>
-        {recommendedFeeds.map((feed, index) => (
-          <li className="user-card" key={index}>
-            <img
-              className="profile-picture"
-              src={`https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${feed.profile_picture}`}
-              alt={`${feed.username}'s profile`}
-            />
-            <span>{feed.username}</span>
-            <button
-              className="follow-feed-button"
-              onClick={() => handleFollowToggle(feed.username)}
-            >
-              {followStates[feed.username] ? "Unfollow" : "Follow"}
-            </button>
-          </li>
+        {recommendedFeeds.map((feed) => (
+          <UserCard
+            key={feed.feed_id}
+            username={feed.username}
+            profilePicture={feed.profile_picture}
+            isFollowing={followStates[feed.username]}
+            onFollowToggle={() => handleFollowToggle(feed.username)}
+          />
         ))}
       </ul>
     </div>

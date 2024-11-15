@@ -41,7 +41,7 @@ const ArticleDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) =
     fetchUserData();
   }, [userId]);
 
-  // Fetch filtered articles
+  // Fetch filtered articles, due to async React, Loaded Articles need to be manually done for filter changes or else it will not update the Loaded Articles to an empty array fast enough when changing filters, resulting in the previous searches articles being filtered out.
   const fetchFilteredArticles = async (append = false, noLoadedArticles = false) => {
     if (loading) return; // If loading is occurring, don't get more articles
 
@@ -57,11 +57,11 @@ const ArticleDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) =
       const results = await fetchArticles(options);
 
       if (results.length === 0) {
-        loading(false);
+        loading(false); // Nothing to load so loading is done.
       } else {
         const newContentIds = results.map((article) => article.content_id);
 
-        // Filter out duplicates, which shouldn't exist EXCEPT WHEN SOME PEOPLE TRY TO BREAK THE WEBSITE THINGS BY RAPIDLY CHANGING FILTERS
+        // Filter out duplicates, which occassionally is a problem with rapid filter changes. Also, you only need to filter IF it's infinite scroll, not when it's a filter change.
 
         const filteredResults = noLoadedArticles ? results : results.filter(
           (article) =>
