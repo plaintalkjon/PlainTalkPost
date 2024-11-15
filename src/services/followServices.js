@@ -1,5 +1,4 @@
 import supabase from "../utility/SupabaseClient";
-import { fetchSourceIdBySourceName } from "./userServices";
 
 // Toggle follow for a feed based on username
 export const toggleFollowFeed = async (user_id, username) => {
@@ -7,6 +6,7 @@ export const toggleFollowFeed = async (user_id, username) => {
   if (!username) throw new Error("Username not provided");
 
   const feed_id = await usernameToUserId(username);
+
   const alreadyFollowing = await isFollowingFeed(user_id, feed_id);
 
   if (alreadyFollowing) {

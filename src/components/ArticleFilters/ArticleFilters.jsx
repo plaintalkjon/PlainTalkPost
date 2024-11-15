@@ -5,6 +5,10 @@ import './ArticleFilters.css';
 const ArticleFilters = ({ filters, setFilters }) => {
   // Helper function to update a filter based on filter name and value
   const handleFilterChange = (filterName, value) => {
+
+    if (filters[filterName] === value) {
+      return; // This prevents a bug where clicking on a filter would call it again but the loadedArticles would have the old values in it, resulting in skipping a page of articles because they're filtered out.
+    }
     setFilters(prevFilters => ({
       ...prevFilters,
       [filterName]: value,

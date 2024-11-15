@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/AuthContext"; // Access authenticated user
 import { toggleFollowSource } from "../../services/followServices"; // Import service functions
 import { bumpContent, upvoteContent } from "../../services/contentServices";
 import "./ArticleCard.css";
@@ -9,12 +8,9 @@ const ArticleCard = ({
   userUpvotes = [], // Add userUpvotes prop
   userSources = [],
   userBumps = [],
-  onFollowChange,
-  onBumpChange,
-  onUpvoteChange,
+  userId,
+  setUserData,
 }) => {
-  const { user } = useAuth();
-
   const [isFollowing, setIsFollowing] = useState(
     userSources.includes(article.sources_id)
   );
@@ -25,7 +21,6 @@ const ArticleCard = ({
   const [isUpvoted, setIsUpvoted] = useState(
     userUpvotes.includes(article.content_id)
   );
-
 
   // Update states based on props when they change
   useEffect(() => {
@@ -60,35 +55,46 @@ const ArticleCard = ({
 
   // Optimistic UI For Following Sources
   const handleFollowClick = async () => {
-    if (!user) {
+    if (!userId) {
       console.warn("User not authenticated");
       return;
     }
 
     setIsFollowing((prev) => !prev); // Optimistically update UI
-    onFollowChange(article.sources_id, !isFollowing); // Pass updated follow state to parent
-
+    // Update parent state via setUserData
+    setUserData((prevData) => ({
+      ...prevData,
+      sources: isFollowing
+        ? prevData.sources.filter((id) => id !== article.sources_id) // Remove source
+        : [...prevData.sources, article.sources_id], // Add source
+    }));
     try {
-      await toggleFollowSource(user.id, article.sources_id);
+      await toggleFollowSource(userId, article.sources_id);
     } catch (error) {
       setIsFollowing((prev) => !prev); // Revert state if error
-      onFollowChange(article.sources_id, !isFollowing); // Pass updated follow state to parent
       console.error("Error following/unfollowing source:", error);
     }
   };
 
   // Optimistic UI For Upvoting Content
   const handleUpvoteClick = async () => {
-    if (!user) {
+    if (!userId) {
       console.warn("User not authenticated");
       return;
     }
 
     setIsUpvoted((prev) => !prev);
-    onUpvoteChange(article.sources_id, !isUpvoted); // Pass updated follow state to parent
+
+    // Update parent state via setUserData
+    setUserData((prevData) => ({
+      ...prevData,
+      upvotes: isUpvoted
+        ? prevData.upvotes.filter((id) => id !== article.content_id) // Remove upvote
+        : [...prevData.upvotes, article.content_id], // Add upvote
+    }));
 
     try {
-      const response = await upvoteContent(user.id, content_id);
+      const response = await upvoteContent(userId, content_id);
       console.log(response.message);
     } catch (error) {
       console.error("Error upvoting content:", error);
@@ -99,17 +105,24 @@ const ArticleCard = ({
 
   // Optimistic UI For Bumping Content
   const handleBumpClick = async () => {
-    if (!user) {
+    if (!userId) {
       console.warn("User not authenticated");
       return;
     }
 
     // Optimistically update the UI
     setIsBumped((prev) => !prev);
-    onBumpChange(article.content_id, !isBumped); // Pass updated follow state to parent
+
+    // Update parent state via setUserData
+    setUserData((prevData) => ({
+      ...prevData,
+      bumps: isBumped
+        ? prevData.bumps.filter((id) => id !== article.content_id) // Remove bump
+        : [...prevData.bumps, article.content_id], // Add bump
+    }));
 
     try {
-      const response = await bumpContent(user.id, content_id);
+      const response = await bumpContent(userId, content_id);
       console.log(response.message);
     } catch (error) {
       console.error("Error bumping content:", error);

@@ -41,10 +41,6 @@ if (filters.sources.length > 0) {
   query = query.in("sources_id", filters.sources);
 }
 
-if (filters.bumps.length > 0) {
-  query = query.in("content_id", filters.bumps);
-}
-console.log(filters.loadedContentIds);
 if (filters.loadedContentIds && filters.loadedContentIds.length > 0) {
   query = query.not('content_id', 'in', `(${filters.loadedContentIds})`);
 }
@@ -56,7 +52,7 @@ if (filters.loadedContentIds && filters.loadedContentIds.length > 0) {
   query = query.order(sortColumn, { ascending: false });
 
   // Sets limit to 10 articles
-  query = query.limit(10);
+  query = query.limit(20);
 
   const { data, error } = await query;
 

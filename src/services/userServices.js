@@ -14,6 +14,73 @@ export const fetchSourceIdBySourceName = async (sourceName) => {
   return data.sources_id;
 }
 
+export async function fetchFeedsByUserId(userId) {
+  try {
+    const { data: rows, error } = await supabase
+      .from("users_feeds")
+      .select("feed_id")
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("Error fetching user feeds:", error);
+      throw new Error("Unable to fetch user feeds");
+    }
+
+    return rows.map((row) => row.feed_id); // Return an array of feed IDs
+  } catch (error) {
+    console.error("Error in fetchFeedsByUserId:", error);
+    throw error; // Re-throw the error to be handled by the calling function
+  }
+}
+
+export async function fetchBumpedFeedByFeedArray(feedArray) {
+  try {
+    const { data: rows, error } = await supabase
+      .from("users_bumps")
+      .select("content_id") // Ensure 'content_id' matches your table schema
+      .in("user_id", feedArray); // Pass feedArray directly as an array
+
+    if (error) {
+      console.error("Error fetching bumped feed:", error);
+      throw new Error("Unable to fetch bumped feed");
+    }
+    if (rows){
+    return rows.map((row) => row.content_id);}
+    else {
+      return [];
+    } // Return an array of content IDs
+  } catch (error) {
+    console.error("Error in fetchBumpedFeedByFeedArray:", error);
+    throw error; // Re-throw the error to be handled by the calling function
+  }
+}
+
+
+export const fetchRecommendedFeedsByUserIdAndFollowedFeeds = async (userId = null, followedFeeds = []) => {
+  try {
+
+
+    const { data, error } = await supabase
+      .from('users_extended')
+      .select('username, profile_picture')
+      .not('user_id', 'in', `(${followedFeeds.join(',')})`) // Exclude followedFeeds
+      .neq('user_id', userId) // Exclude followedFeeds
+      .order('follows', { ascending: false })
+      .limit(10);
+
+    if (error) {
+      console.error('Error fetching recommended feeds:', error);
+      return [];
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return [];
+  }
+};
+
+
 
 export async function fetchUpvotesByUserId(userId) {
   try {
@@ -72,17 +139,16 @@ export async function fetchBumpsByUserId(userId) {
   }
 }
 
-export const fetchRecommendedFeedsByUserId = async (userId = null, followedFeeds = []) => {
+export const fetchUsernameAndProfilePictureByUserId = async (userId) => {
   try {
     const { data, error } = await supabase
       .from('users_extended')
       .select('username, profile_picture')
-      .not('user_id', 'in', `(${followedFeeds.join(',')})`) // Exclude followedFeeds
-      .order('follows', { ascending: false })
-      .limit(10);
+      .eq('user_id', userId)
+      .single();
 
     if (error) {
-      console.error('Error fetching recommended feeds:', error);
+      console.error('Error fetchUsernameAndProfilePictureByUserId:', error);
       return [];
     }
 

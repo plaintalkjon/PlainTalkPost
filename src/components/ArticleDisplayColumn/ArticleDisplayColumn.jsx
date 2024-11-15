@@ -1,169 +1,158 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import ArticleCard from "../ArticleCard/ArticleCard";
-import { useAuth } from "../../contexts/AuthContext";
 import {
   fetchBumpsByUserId,
   fetchSourcesByUserId,
-  fetchUpvotesByUserId
+  fetchUpvotesByUserId,
 } from "../../services/userServices";
 import { fetchArticles } from "../../services/articleServices";
 import "./ArticleDisplayColumn.css";
 
-const ArticleDisplayColumn = ({ filters }) => {
-  const { user } = useAuth();
-  const [filter, setFilter] = useState(user ? "yourFeed" : "all");
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [allLoaded, setAllLoaded] = useState(false);
-  const [loadedContentIds, setLoadedContentIds] = useState([]);
-  const [shouldFetch, setShouldFetch] = useState(false); // New state to control when fetching starts
+const ArticleDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) => {
+  const [feedFilter, setFeedFilter] = useState(initialFilter); // Sets whether the feedFilter is Your Feed (for logged in users to see their preferred feed) or Show All (for non-logged in users)
+  const [articles, setArticles] = useState([]); // These will be the articles that need to be appended
+  const [loading, setLoading] = useState(false); // Is loading taking place.
+  const [loadedContentIds, setLoadedContentIds] = useState([]); // Tracks what articles are on the page so that infinite scroll doesn't get repeats
+  const [userData, setUserData] = useState({
+    sources: [],
+    bumps: [],
+    upvotes: [],
+  });
 
-  // Set initial active filter based on whether there is a user
+  const loadMoreRef = useRef(null);
+
+  // Fetch user-specific data
+  const fetchUserData = async () => {
+    try {
+      const sources = await fetchSourcesByUserId(userId);
+      const [bumps, upvotes] = await Promise.all([
+        fetchBumpsByUserId(userId),
+        fetchUpvotesByUserId(userId),
+      ]);
+
+      setUserData({ sources, bumps, upvotes });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  // Initialize user data
   useEffect(() => {
-    setFilter(user ? "yourFeed" : "all");
-  }, [user]);
+    fetchUserData();
+  }, [userId]);
 
-  // Track user actions
-  const [userSources, setUserSources] = useState([]);
-  const [userBumps, setUserBumps] = useState([]);
-  const [userUpvotes, setUserUpvotes] = useState([]);
+  // Fetch filtered articles
+  const fetchFilteredArticles = async (append = false, noLoadedArticles = false) => {
+    if (loading) return; // If loading is occurring, don't get more articles
 
-  
-// Only a logged in user needs this information. This may be removable later if I refresh the page on login.
-  useEffect(() => {
-    const fetchUserActions = async () => {
-      if (user) {
-        const sources = await fetchSourcesByUserId(user.id);
-        const bumps = await fetchBumpsByUserId(user.id);
-        const upvotes = await fetchUpvotesByUserId(user.id);
-        setUserSources(sources);
-        setUserBumps(bumps);
-        setUserUpvotes(upvotes);
-      }
-    };
-    fetchUserActions();
-  }, [user]);
-
-  // Optimistic updates for local state
-  const updateUserSources = (sourceId, followed) => {
-    setUserSources((prevSources) =>
-      followed ? [...prevSources, sourceId] : prevSources.filter((id) => id !== sourceId)
-    );
-  };
-
-  const updateUserBumps = (contentId, followed) => {
-    setUserBumps((prevBumps) =>
-      followed ? [...prevBumps, contentId] : prevBumps.filter((id) => id !== contentId)
-    );
-  };
-
-  const updateUserUpvotes = (contentId, followed) => {
-    setUserUpvotes((prevUpvotes) =>
-      followed ? [...prevUpvotes, contentId] : prevUpvotes.filter((id) => id !== contentId)
-    );
-  };
-
-  // Function to fetch filtered articles
-  const fetchFilteredArticles = async (append = false) => {
     setLoading(true);
+
     const options = {
       ...filters,
-      sources: filter === "yourFeed" && user ? userSources : [],
-      bumps: filter === "bumped" && user ? userBumps : [],
-      loadedContentIds,
+      sources: feedFilter === "yourFeed" ? userData.sources : [], // Limit to sources with the search or get everything
+      loadedContentIds: noLoadedArticles ? [] : loadedContentIds,
     };
 
-    const results = await fetchArticles(options);
+    try {
+      const results = await fetchArticles(options);
 
-    if (results.length === 0) {
-      setAllLoaded(true);
-    } else {
-      const newContentIds = results.map((article) => article.content_id);
-      setLoadedContentIds((prevIds) => [...prevIds, ...newContentIds]);
-      setArticles((prevArticles) =>
-        append ? [...prevArticles, ...results] : results
-      );
-    }
-    setLoading(false);
-  };
+      if (results.length === 0) {
+        loading(false);
+      } else {
+        const newContentIds = results.map((article) => article.content_id);
 
-  // Reset articles and loadedContentIds on filter change
-  useEffect(() => {
-    setLoadedContentIds([]); // Clear loaded IDs
-    setAllLoaded(false);
-    setArticles([]); // Clear current articles
-    setShouldFetch(true); // Indicate fetching should begin after reset
-  }, [filter, filters, user]);
+        // Filter out duplicates, which shouldn't exist EXCEPT WHEN SOME PEOPLE TRY TO BREAK THE WEBSITE THINGS BY RAPIDLY CHANGING FILTERS
 
-  // Trigger fetch after reset completes
-  useEffect(() => {
-    if (shouldFetch) {
-      fetchFilteredArticles();
-      setShouldFetch(false); // Reset fetch control
-    }
-  }, [shouldFetch]); // Only run when shouldFetch changes
+        const filteredResults = noLoadedArticles ? results : results.filter(
+          (article) =>
+            !articles.some((existingArticle) => existingArticle.content_id === article.content_id)
+        );
+  
+        setLoadedContentIds((prevIds) => [...prevIds, ...newContentIds]);
+        setArticles((prevArticles) =>
+          append ? [...prevArticles, ...filteredResults] : filteredResults
+        );
+      }
 
-  const handleLoadMore = () => {
-    if (!loading && !allLoaded) {
-      fetchFilteredArticles(true); // Append new results
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Infinite scroll observer
+  const handleObserver = useCallback(
+    (entries) => {
+      const target = entries[0];
+      if (target.isIntersecting && !loading) {
+        fetchFilteredArticles(true);
+      }
+    },
+    [loading]
+  );
+
+  useEffect(() => {
+    if (loading || userData.sources.length === 0) return;
+
+    const observer = new IntersectionObserver(handleObserver, {
+      root: null,
+      rootMargin: "20px",
+      threshold: 1.0,
+    });
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [handleObserver, loading]);
+
+  // Handle filter changes
+  useEffect(() => {
+      setLoadedContentIds([]); // Filter change wipes out previous articles, so cleaning up LoadedContentIds since there are no duplicate concerns
+      fetchFilteredArticles(false, true);
+  }, [feedFilter, filters]);
+
+  console.log(articles);
   return (
     <div className="articles-display-column">
       <div id="home-column-center-filters">
-        {user ? (
-          <>
-            <div
-              className={`center-column-filter ${
-                filter === "yourFeed" ? "activeUserCard" : ""
-              }`}
-              onClick={() => setFilter("yourFeed")}
-            >
-              <p>Your Feed</p>
-            </div>
-            <div
-              className={`center-column-filter ${
-                filter === "bumped" ? "activeUserCard" : ""
-              }`}
-              onClick={() => setFilter("bumped")}
-            >
-              <p>Bumped</p>
-            </div>
-            <div
-              className={`center-column-filter ${
-                filter === "all" ? "activeUserCard" : ""
-              }`}
-              onClick={() => setFilter("all")}
-            >
-              <p>Show All</p>
-            </div>
-          </>
-        ) : (
-          <div className="center-column-filter-not-logged-in activeUserCard">
-            <p>Show All</p>
-          </div>
-        )}
+        <div
+          className={`center-column-filter ${
+            feedFilter === "yourFeed" && !loading ? "activeUserCard" : ""
+          }`}
+          onClick={() => setFeedFilter("yourFeed")}
+        >
+          <p>Your Feed</p>
+        </div>
+        <div
+          className={`center-column-filter ${
+            feedFilter === "" && !loading ? "activeUserCard" : ""
+          }`}
+          onClick={() => setFeedFilter("")}
+        >
+          <p>Show All</p>
+        </div>
       </div>
       {articles.map((article) => (
         <ArticleCard
           key={article.content_id}
+          feedFilter={feedFilter}
           article={article}
-          userUpvotes={userUpvotes}
-          userSources={userSources}
-          userBumps={userBumps}
-          onFollowChange={updateUserSources}
-          onBumpChange={updateUserBumps}
-          onUpvoteChange={updateUserUpvotes}
+          userUpvotes={userData.upvotes}
+          userSources={userData.sources}
+          userBumps={userData.bumps}
+          userId={userId}
+          setUserData={setUserData}
         />
       ))}
-      {loading && <p>Loading articles...</p>}
-      {allLoaded && <p>All articles loaded</p>}
-      {!allLoaded && !loading && (
-        <button onClick={handleLoadMore} className="load-more-button">
-          Load More
-        </button>
-      )}
+      {loading ? <p>Loading articles...</p> : <p>All articles loaded</p>}
+      <div ref={loadMoreRef} className="load-more-trigger"></div>
     </div>
   );
 };
