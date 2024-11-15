@@ -17,7 +17,6 @@ const Home = () => {
     publication: null,
     category: null,
   });
-
   const [authResolved, setAuthResolved] = useState(false); // Tracks when auth state is resolved
 
   useEffect(() => {
@@ -38,6 +37,7 @@ const Home = () => {
             filters={filters}
             initialFilter={user ? "yourFeed" : ""}
             userId={user?.id || null} // Pass userId or null
+            
           />
         ) : (
           <p>Loading articles...</p> // Placeholder while auth state is being resolved

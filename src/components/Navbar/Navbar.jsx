@@ -17,11 +17,11 @@ const Navbar = ({ onLoginClick }) => {
   return (
     <nav id="navbar">
       <div className="navbar-logo">
-        <img src="img/plain-talk-post-logo.png" alt="Plain Talk Post Logo" />
+      <Link to="/"><img src="img/plain-talk-post-logo.png" alt="Plain Talk Post Logo" /></Link>
       </div>
       <ul className="navbar-links">
         <li>
-          <Link to="/home">Home</Link>
+          <Link to="/">Home</Link>
         </li>
         <li>
           <Link to="/settings">Settings</Link>

@@ -159,6 +159,26 @@ export const fetchUsernameAndProfilePictureByUserId = async (userId) => {
   }
 };
 
+export const fetchUserIdAndProfilePictureByUsername = async (username) => {
+  try {
+    const { data, error } = await supabase
+      .from('users_extended')
+      .select('user_id,profile_picture')
+      .eq('username', username)
+      .single();
+
+    if (error) {
+      console.error('Error fetchProfilePictureByUsername:', error);
+      return [];
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return [];
+  }
+};
+
 
 // Helper function to update upvotes count in content table
 const updateUpvotesCount = async (content_id, increment) => {

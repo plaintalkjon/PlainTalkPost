@@ -1,0 +1,30 @@
+#profile-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 1000px;
+    min-width: 80vw;
+    margin: 0 auto; 
+    gap: 20px; /* Adjust spacing between rows */
+}
+
+.profile-div-row {
+    display: flex; /* Enable flexbox for row alignment */
+    flex-direction: row; /* Arrange child elements in a row */
+    justify-content: space-between; /* Spread children across the row */
+    gap: 20px; /* Add space between child elements */
+}
+
+#profile-profile-picture-div {
+    max-width: 300px;
+    flex: 0 0 auto; /* Prevents shrinking and ensures the div maintains its size */
+}
+
+#profile-profile-picture {
+    max-width: 300px;
+    border-radius: 50%; /* Optional for rounded profile picture */
+}
+
+.profile-bumped-articles {
+    flex: 1; /* Allows this section to take up remaining space */
+}
