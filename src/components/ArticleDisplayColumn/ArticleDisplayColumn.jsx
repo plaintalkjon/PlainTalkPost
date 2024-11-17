@@ -9,47 +9,43 @@ import { fetchArticles } from "../../services/articleServices";
 import "./ArticleDisplayColumn.css";
 
 const ArticleDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) => {
-  const [feedFilter, setFeedFilter] = useState(initialFilter); // Sets whether the feedFilter is Your Feed (for logged in users to see their preferred feed) or Show All (for non-logged in users)
-  const [articles, setArticles] = useState([]); // These will be the articles that need to be appended
-  const [loading, setLoading] = useState(false); // Is loading taking place.
-  const [loadedContentIds, setLoadedContentIds] = useState([]); // Tracks what articles are on the page so that infinite scroll doesn't get repeats
-  const [userData, setUserData] = useState({
-    sources: [],
-    bumps: [],
-    upvotes: [],
-  });
+  const [feedFilter, setFeedFilter] = useState(initialFilter);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadedContentIds, setLoadedContentIds] = useState([]);
+  const [userData, setUserData] = useState({ sources: [], bumps: [], upvotes: [] });
+  const [userDataLoaded, setUserDataLoaded] = useState(false); // Tracks if user data is loaded
 
   const loadMoreRef = useRef(null);
 
-  // Fetch user-specific data
   const fetchUserData = async () => {
     try {
-      const sources = await fetchSourcesByUserId(userId); // Keep this outside the promise all OR ELSE a bug occurs that loads all articles instead of Your Feed
+      const sources = await fetchSourcesByUserId(userId);
       const [bumps, upvotes] = await Promise.all([
         fetchBumpsByUserId(userId),
         fetchUpvotesByUserId(userId),
       ]);
 
       setUserData({ sources, bumps, upvotes });
+      setUserDataLoaded(true);
     } catch (error) {
       console.error("Error fetching user data:", error);
+      setUserDataLoaded(true);
     }
   };
 
-  // Initialize user data
   useEffect(() => {
     fetchUserData();
   }, [userId]);
 
-  // Fetch filtered articles, due to async React, Loaded Articles need to be manually done for filter changes or else it will not update the Loaded Articles to an empty array fast enough when changing filters, resulting in the previous searches articles being filtered out.
   const fetchFilteredArticles = async (append = false, noLoadedArticles = false) => {
-    if (loading) return; // If loading is occurring, don't get more articles
+    if (loading) return;
 
     setLoading(true);
 
     const options = {
       ...filters,
-      sources: feedFilter === "yourFeed" ? userData.sources : [], // Limit to sources with the search or get everything
+      sources: feedFilter === "yourFeed" ? userData.sources : [],
       loadedContentIds: noLoadedArticles ? [] : loadedContentIds,
     };
 
@@ -57,23 +53,24 @@ const ArticleDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) =
       const results = await fetchArticles(options);
 
       if (results.length === 0) {
-        loading(false); // Nothing to load so loading is done.
+        setLoading(false);
       } else {
         const newContentIds = results.map((article) => article.content_id);
+        const filteredResults = noLoadedArticles
+          ? results
+          : results.filter(
+              (article) =>
+                !articles.some(
+                  (existingArticle) =>
+                    existingArticle.content_id === article.content_id
+                )
+            );
 
-        // Filter out duplicates, which occassionally is a problem with rapid filter changes. Also, you only need to filter IF it's infinite scroll, not when it's a filter change.
-
-        const filteredResults = noLoadedArticles ? results : results.filter(
-          (article) =>
-            !articles.some((existingArticle) => existingArticle.content_id === article.content_id)
-        );
-  
         setLoadedContentIds((prevIds) => [...prevIds, ...newContentIds]);
         setArticles((prevArticles) =>
           append ? [...prevArticles, ...filteredResults] : filteredResults
         );
       }
-
     } catch (error) {
       console.error("Error fetching articles:", error);
     } finally {
@@ -81,7 +78,6 @@ const ArticleDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) =
     }
   };
 
-  // Infinite scroll observer
   const handleObserver = useCallback(
     (entries) => {
       const target = entries[0];
@@ -112,13 +108,14 @@ const ArticleDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) =
     };
   }, [handleObserver, loading]);
 
-  // Handle filter changes
   useEffect(() => {
-      setLoadedContentIds([]); // Filter change wipes out previous articles, so cleaning up LoadedContentIds since there are no duplicate concerns
-      fetchFilteredArticles(false, true);
-  }, [feedFilter, filters]);
+    if (!userDataLoaded) return;
 
-  console.log(articles);
+    console.log("Ran on first load");
+    setLoadedContentIds([]);
+    fetchFilteredArticles(false, true);
+  }, [feedFilter, filters, userDataLoaded]);
+
   return (
     <div className="articles-display-column">
       <div id="home-column-center-filters">
