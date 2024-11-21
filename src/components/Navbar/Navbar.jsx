@@ -1,53 +1,82 @@
 // src/components/Navbar/Navbar.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext"; // Import AuthContext
+import { useAuth } from "../../contexts/AuthContext";
+import { logout } from '../../services/authServices';
 import supabase from "../../utility/SupabaseClient";
 import "./Navbar.css";
 
-const Navbar = ({ onLoginClick }) => {
-  const { user, setUser } = useAuth(); // Access user and setUser from AuthContext
+const Navbar = () => {
+  const { user, setUser } = useAuth();
+  const [username, setUsername] = useState(null);
 
-  // Logout handler to log the user out and update the auth context
+  // Fetch username when user is logged in
+  useEffect(() => {
+    const fetchUsername = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from('user_profile')
+          .select('username')
+          .eq('user_id', user.id)
+          .single();
+          
+        if (data) {
+          setUsername(data.username);
+        }
+      }
+    };
+
+    fetchUsername();
+  }, [user]);
+
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null); // Clear user state in AuthContext
+    try {
+      await logout();
+      setUser(null);
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
-    <nav id="navbar">
-      <div className="navbar-logo">
-      <Link to="/"><img src="img/plain-talk-post-logo.png" alt="Plain Talk Post Logo" /></Link>
-      </div>
-      <ul className="navbar-links">
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/settings">Settings</Link>
-        </li>
-        <li>
-          {user ? (
-            // If user is logged in, show Log Off
-            <Link to="#" onClick={(e) => {
-                e.preventDefault();
-                handleLogout(); // Log out the user
-              }}
-            >
-              Log Off
-            </Link>
-          ) : (
-            // If user is not logged in, show Log On and open login modal
-            <Link to="#" onClick={(e) => {
-                e.preventDefault();
-                onLoginClick(); // Open login modal
-              }}
-            >
-              Log On
-            </Link>
+    <nav className="navbar">
+      <div className="navbar-container">
+        <Link to="/" className="nav-logo">
+          <img className="navbar-logo" src="/img/plain-talk-post-logo.png" alt="Logo" />
+        </Link>
+        <ul className="navbar-links">
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          {user && username && (
+            <>
+              <li>
+                <Link to={`/profile/${username}`}>Profile</Link>
+              </li>
+            </>
           )}
-        </li>
-      </ul>
+          {user && (
+            <li>
+              <Link to="/settings">Settings</Link>
+            </li>
+          )}
+          <li>
+            {user ? (
+              <Link 
+                to="#" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleLogout();
+                }}
+              >
+                Log Off
+              </Link>
+            ) : (
+              <Link to="/login">Log On</Link>
+            )}
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 };

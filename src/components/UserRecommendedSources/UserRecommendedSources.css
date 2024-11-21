@@ -1,0 +1,164 @@
+.user-recommended {
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: 8px;
+    border: 1px solid var(--tidbits-color);
+    color: var(--text-color);
+  }
+  
+  .sources-header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .sources-header h2 {
+    margin: 0;
+  }
+  
+  .sources-header .edit-button {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background: var(--tidbits-color);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .sources-header .edit-button:hover {
+    background: var(--hover-color);
+  }
+  
+  .source-search {
+    width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  
+  .source-search input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem;
+    border: 1px solid var(--tidbits-color);
+    border-radius: 4px;
+    background: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .source-search input::placeholder {
+    color: var(--hover-color);
+  }
+  
+  .search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--background-color);
+    border: 1px solid var(--tidbits-color);
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .search-results li {
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .search-results li:hover {
+    background: var(--tidbits-color);
+  }
+  
+  .source-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .source-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--tidbits-color);
+  }
+  
+  .remove-button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    margin-right: -0.25rem;
+  }
+  
+  .remove-button:hover {
+    opacity: 1;
+  }
+  
+  .no-recommendations {
+    text-align: center;
+    color: var(--hover-color);
+  }
+  
+  .edit-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+  }
+  
+  .recommendation-limit {
+    color: var(--hover-color);
+    font-size: 0.9rem;
+  }
+  
+  .source-search input:disabled {
+    background-color: var(--background-color);
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .tidbits-follow-img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .tidbits-follow-img:hover {
+    transform: scale(1.1);
+  }
+  
+  .tidbits-follow-img.clicked {
+    filter: var(--primary-color-filter);
+  }
+  
+  .source-name {
+    flex-grow: 1;
+  }
+  
+  .follow-button-container {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  

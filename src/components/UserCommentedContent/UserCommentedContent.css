@@ -1,0 +1,20 @@
+.user-commented-content {
+    background: var(--background-color);
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .user-commented-content h2 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .commented-content-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .commented-content-list .content-card {
+    margin: 0;
+  }

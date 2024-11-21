@@ -21,7 +21,7 @@ export const signup = async (email, password, username) => {
   // Insert additional user data (username) into 'users_extended'
   const userId = data.user.id;
   const { error: profileError } = await supabase
-    .from('users_extended')
+    .from('user_profile')
     .insert([{ user_id: userId, username }]);
 
   if (profileError) throw new Error(profileError.message);
@@ -32,4 +32,7 @@ export const signup = async (email, password, username) => {
 export const logout = async () => {
   const { error } = await supabase.auth.signOut();
   if (error) throw new Error('Logout failed');
+
+    window.location.reload();
+
 };

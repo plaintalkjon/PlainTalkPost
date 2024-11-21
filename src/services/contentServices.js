@@ -32,7 +32,7 @@ export const upvoteContent = async (userId, content_id) => {
 
   // Check if the user has already upvoted this content
   const { data: existingVote, error: existingVoteError } = await supabase
-    .from("users_upvotes")
+    .from("user_content_upvote")
     .select("*")
     .eq("user_id", userId)
     .eq("content_id", content_id)
@@ -45,7 +45,7 @@ export const upvoteContent = async (userId, content_id) => {
   // If a vote exists, remove it
   if (existingVote) {
     const { error: deleteError } = await supabase
-      .from("users_upvotes")
+      .from("user_content_upvote")
       .delete()
       .eq("user_id", userId)
       .eq("content_id", content_id);
@@ -65,9 +65,9 @@ export const upvoteContent = async (userId, content_id) => {
 
   // Add a new vote
   const { error: insertError } = await supabase
-    .from("users_upvotes")
+    .from("user_content_upvote")
     .insert([
-      { user_id: userId, content_id: content_id, timestamp: new Date() },
+      { user_id: userId, content_id: content_id, created_at: new Date() },
     ]);
 
   if (insertError) {
@@ -83,45 +83,78 @@ export const upvoteContent = async (userId, content_id) => {
   };
 };
 
-// Function to toggle bump on content
-export const bumpContent = async (userId, content_id) => {
-  if (!userId) throw new Error("Unauthorized: No user logged in");
 
-  // Check if the user has already bumped this content
-  const { data: existingBump, error: existingBumpError } = await supabase
-    .from("users_bumps")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("content_id", content_id)
-    .single();
-
-  if (existingBumpError && existingBumpError.code !== "PGRST116") {
-    throw new Error("Error checking bump status");
+export const fetchContent = async (filters) => {
+  let query = supabase.from("content").select(`
+    title,
+    link,
+    description,
+    datetime,
+    content_id,
+    category,
+    upvotes,
+    source_id,
+    media_type,
+    source!inner (
+      name,
+      channel_id,
+      political_bias,
+      publication_type
+    )
+  `);
+    console.log("fetching content");
+  // Apply filters
+  if (filters.category) {
+    query = query.eq("category", filters.category);
+  }
+  if (filters.mediaType) {
+    query = query.eq("media_type", filters.mediaType);
+  }
+  // Ensure that filters on `sources` use the correct table alias
+  if (filters.bias) {
+    query = query.eq("source.political_bias", filters.bias);
+  }
+  if (filters.publication) {
+    query = query.eq("source.publication_type", filters.publication);
   }
 
-  // If a bump exists, remove it
-  if (existingBump) {
-    const { error: deleteError } = await supabase
-      .from("users_bumps")
-      .delete()
-      .eq("user_id", userId)
-      .eq("content_id", content_id);
-
-    if (deleteError) {
-      throw new Error("Error removing bump");
-    }
-
-    return { success: true, message: "Bump removed" };
+  if (filters.sources && filters.sources.length > 0) {
+    query = query.in("source_id", filters.sources);
   }
 
-  // Add a new bump
-  const { error: insertError } = await supabase
-    .from("users_bumps")
-    .insert([{ user_id: userId, content_id: content_id }]);
-
-  if (insertError) {
-    throw new Error("Error adding bump");
+  if (filters.loadedContentIds && filters.loadedContentIds.length > 0) {
+    query = query.not("content_id", "in", `(${filters.loadedContentIds})`);
   }
 
-  return { success: true, message: "Bump added" };
+  if (filters.specificContentIds && filters.specificContentIds.length > 0) {
+    query = query.in("content_id", filters.specificContentIds);
+  }
+
+
+  if (filters.datetime) {
+    query = query.gte("datetime", filters.datetime);
+  } else {
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    query = query.gte("datetime", oneDayAgo);
+  }
+  
+  // Sorting
+  const sortColumn = filters.sort === "latest" ? "datetime" : "upvotes";
+  query = query.order(sortColumn, { ascending: false });
+
+  // Sets limit to 10 content
+  if (filters.limit) {
+    query = query.limit(filters.limit);
+  } else {
+    query = query.limit(20);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Error fetching content:", error);
+    return [];
+  }
+
+  return data;
 };

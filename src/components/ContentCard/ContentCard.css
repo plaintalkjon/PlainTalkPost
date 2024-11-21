@@ -1,0 +1,214 @@
+.left {
+  border-left: 4px solid var(--left-bias-color);
+  border-radius: 5px;
+}
+.leanleft {
+  border-left: 4px solid var(--leanleft-bias-color);
+  border-radius: 5px;
+}
+.center {
+  border-left: 4px solid var(--center-bias-color);
+  border-radius: 5px;
+}
+.leanright {
+  border-left: 4px solid var(--leanright-bias-color);
+  border-radius: 5px;
+}
+.right {
+  border-left: 4px solid var(--right-bias-color);
+  border-radius: 5px;
+}
+.substack {
+  border-left: 4px solid var(--substack-bias-color);
+  border-radius: 5px;
+}
+
+.content-card {
+  background-color: var(--background);
+  margin: 0 0 10px 0;
+  padding-left: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-description {
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+.tidbits-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.tidbits {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--tidbits-color);
+  border-radius: 7px;
+  padding: 6px;
+  height: 20px;
+  text-wrap: nowrap;
+  font-size: 14px;
+}
+
+.tidbits button {
+  display: flex;
+  border-radius: 10px;
+  height: 30px;
+  width: 30px;
+  border: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.tidbits-button-upvote img {
+  height: 23px;
+  width: 23px;
+  margin: 0;
+  padding: 0;
+}
+
+.tidbits-follow-img {
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+  margin-right: 3px;
+  cursor: pointer;
+}
+
+.dropdown-link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tidbits-company-name {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.tidbits-company-name:hover {
+  text-decoration: underline;
+}
+
+.content-video-container {
+  display: none;
+}
+
+.content-video-container.show {
+  display: flex;
+}
+
+iframe {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  max-width: 560px;
+}
+
+.comments-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--tidbits-color);
+}
+
+.write-comment-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: none;
+  border: 1px solid var(--tidbits-color);
+  border-radius: 4px;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.comment-form {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.comment-form textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.5rem;
+  border: 1px solid var(--tidbits-color);
+  border-radius: 4px;
+  background: var(--background-color);
+  color: var(--text-color);
+  resize: vertical;
+}
+
+.comment-form-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.tidbits-comment-img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.tidbits-comment-img:hover {
+  transform: scale(1.1);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.comment-modal {
+  background: var(--background-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.comment-modal textarea {
+  width: 100%;
+  min-height: 100px;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border: 1px solid var(--tidbits-color);
+  border-radius: 4px;
+  background: var(--background-color);
+  color: var(--text-color);
+  resize: vertical;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.modal-buttons button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--tidbits-color);
+  border-radius: 4px;
+  background: var(--background-color);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.modal-buttons button:hover {
+  background: var(--tidbits-color);
+}

@@ -1,42 +1,70 @@
 // src/components/UserCard/UserCard.jsx
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { useUserData } from "../../contexts/UserDataContext";
+import { toggleFollowFeed } from "../../services/followServices";
 import "./UserCard.css";
 
-const UserCard = ({ 
-  username, 
-  profilePicture, 
-  isFollowing, 
-  onFollowToggle 
+const UserCard = ({
+  username,
+  profilePicture,
+  userId,
+  cardType = "default"
 }) => {
-  const navigate = useNavigate(); // Initialize navigate hook
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { userData, updateUserData } = useUserData();
 
-  // Handle card click for navigation
-  const handleCardClick = () => {
-    navigate(`/profile/${username}`); // Navigate to the profile page
+  const isFollowing = userData?.following?.includes(userId);
+  const handleFollowToggle = async (e) => {
+    e.stopPropagation();
+    if (!user || !userData?.following) return;
+
+    try {
+      // Optimistic update with ALL userData properties preserved
+      const newFollowing = isFollowing
+        ? userData.following.filter(id => id !== userId)
+        : [...(userData.following || []), userId];
+
+      updateUserData({
+        ...userData,                // Preserve all existing userData
+        following: newFollowing     // Update only the following array
+      });
+
+      await toggleFollowFeed(user.id, username);
+    } catch (error) {
+      // Revert on error (preserving all data)
+      updateUserData({
+        ...userData,                // Preserve all existing userData
+        following: userData.following // Revert only the following array
+      });
+      console.error('Error toggling follow:', error);
+    }
   };
 
   return (
-    <li 
-      className="user-card" 
-      onClick={handleCardClick} // Attach click handler for navigation
-    >
-      <img
-        className="profile-picture"
-        src={`https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${profilePicture}`}
-        alt={`${username}'s profile`}
-      />
-      <span>{username}</span>
-      <button
-        className="follow-feed-button"
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent card click event from triggering
-          onFollowToggle(); // Call the follow/unfollow toggle function
-        }}
-      >
-        {isFollowing ? "Unfollow" : "Follow"}
-      </button>
-    </li>
+    <div className={`user-card ${cardType}-card`} onClick={() => navigate(`/profile/${username}`)}>
+      <div className="user-card-content">
+        <img
+          className={`${cardType}-profile-picture`}
+          src={profilePicture
+            ? `https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${profilePicture}`
+            : "/img/default-profile.png"
+          }
+          alt={`${username}'s profile`}
+        />
+        <p><span>{username}</span></p>
+      </div>
+      {user && user.id !== userId && (
+        <button 
+          className="follow-feed-button" 
+          onClick={(e) => handleFollowToggle(e)}
+        >
+          {isFollowing ? "Following" : "Follow"}
+        </button>
+      )}
+    </div>
   );
 };
 

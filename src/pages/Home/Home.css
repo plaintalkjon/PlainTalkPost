@@ -55,3 +55,31 @@
     border-radius: 5px;
   
   }
+
+.home-container {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 300px 1fr 300px; /* Fixed widths for sidebars */
+}
+
+/* Ensure sidebar containers maintain width */
+.home-left-sidebar,
+.home-right-sidebar {
+  width: 300px;
+  box-sizing: border-box;
+}
+
+/* Ensure UserCard stays within container */
+.user-card-link {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.user-card {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+}

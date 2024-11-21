@@ -1,15 +1,17 @@
 // src/pages/Home.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./Home.css";
-import ArticleFilters from "../../components/ArticleFilters/ArticleFilters.jsx";
-import ArticleDisplayColumn from "../../components/ArticleDisplayColumn/ArticleDisplayColumn.jsx";
-import SearchBar from "../../components/SearchBar/SearchBar.jsx";
-import YourFollowedFeeds from "../../components/YourFollowedFeeds/YourFollowedFeeds.jsx";
-import RecommendedFeeds from "../../components/RecommendedFeeds/RecommendedFeeds.jsx";
+import ContentFilters from "../../components/ContentFilters/ContentFilters.jsx";
+import ContentDisplayColumn from "../../components/ContentDisplayColumn/ContentDisplayColumn.jsx";
+import YourFollowedFeeds from "../../components/UserFollowedFeeds/UserFollowedFeeds.jsx";
+import RecommendedFeeds from "../../components/SystemRecommendedFeeds/SystemRecommendedFeeds.jsx";
 import { useAuth } from "../../contexts/AuthContext.jsx";
+import { useUserData } from "../../hooks/useUserData";
+import Loading from "../../components/Loading/Loading";
 
 const Home = () => {
   const { user } = useAuth();
+  const { data: userData, isLoading } = useUserData(user?.id);
   const [filters, setFilters] = useState({
     sort: "trending",
     mediaType: null,
@@ -17,36 +19,34 @@ const Home = () => {
     publication: null,
     category: null,
   });
-  const [authResolved, setAuthResolved] = useState(false); // Tracks when auth state is resolved
 
-  useEffect(() => {
-    // Set authResolved to true once the user state is determined
-    if (user !== null) {
-      setAuthResolved(true);
-    }
-  }, [user]);
+  const hasFollowedFeeds = userData?.following?.length > 0;
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div id="home-columns-container">
       <div id="home-column-left" className="column home-column-left">
-        <ArticleFilters filters={filters} setFilters={setFilters} />
+        <ContentFilters filters={filters} setFilters={setFilters} />
       </div>
       <div id="home-column-center" className="column home-column-center">
-        {authResolved ? (
-          <ArticleDisplayColumn
-            filters={filters}
-            initialFilter={user ? "yourFeed" : ""}
-            userId={user?.id || null} // Pass userId or null
-            
-          />
-        ) : (
-          <p>Loading articles...</p> // Placeholder while auth state is being resolved
-        )}
+        <ContentDisplayColumn
+          filters={filters}
+          initialFilter={user ? "yourFeed" : ""}
+          userId={user?.id || null}
+          userData={userData}
+        />
       </div>
       <div className="column home-column-right">
-        <SearchBar />
-        <YourFollowedFeeds />
-        <RecommendedFeeds />
+        {hasFollowedFeeds && (
+          <YourFollowedFeeds />
+        )}
+        <RecommendedFeeds
+          userData={userData}
+          userId={user?.id}
+        />
       </div>
     </div>
   );

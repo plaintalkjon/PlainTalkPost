@@ -1,0 +1,35 @@
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .loading-spinner {
+    animation: spin 1s linear infinite;
+  }
+  
+  /* Size variants */
+  .small .loading-spinner {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .medium .loading-spinner {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .large .loading-spinner {
+    width: 64px;
+    height: 64px;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }

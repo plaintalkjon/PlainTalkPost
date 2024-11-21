@@ -1,0 +1,17 @@
+.user-followed-feeds-container {
+  margin: 15px 0;
+  border: solid 1px var(--tidbits-color);
+  border-radius: 5px;
+}
+
+.user-followed-feeds-heading {
+  margin: 3px;
+  padding: 5px;
+  color: var(--text-color);
+}
+
+.user-followed-feeds-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./Profile.css";
 import { fetchUserIdAndProfilePictureByUsername } from "../../services/userServices";
-import ProfileBumpedFeed from "../../components/ProfileBumpedFeed/ProfileBumpedFeed";
-
+import UserRecommendedSources from "../../components/UserRecommendedSources/UserRecommendedSources";
+import UserRecommendedFeeds from "../../components/UserRecommendedFeeds/UserRecommendedFeeds";
+import UserCommentedContent from '../../components/UserCommentedContent/UserCommentedContent';
 const Profile = () => {
   const { username } = useParams(); // Extract username from route parameters
   const [profilePicture, setProfilePicture] = useState(null); // Initialize state
@@ -27,30 +28,38 @@ const Profile = () => {
 
   return (
     <div id="profile-body">
-      <h1>{username}</h1>
-      <div id="profile-div-row-first" className="profile-div-row">
-        <div id="profile-profile-picture-div">
-          {profilePicture ? (
-            <img
-              id="profile-profile-picture"
-              src={`https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${profilePicture}`}
-              alt={`${username}'s Profile Picture`}
-            />
-          ) : (
-            <p>Loading profile picture...</p>
-          )}
+      <div className="profile-two-column-layout">
+        <div className="profile-left-column">
+          <div className="profile-header">
+            <div className="profile-picture-container">
+              {profilePicture ? (
+                <img
+                  className="profile-picture"
+                  src={`https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${profilePicture}`}
+                  alt={`${username}'s Profile Picture`}
+                />
+              ) : (
+                <p>Loading profile picture...</p>
+              )}
+            </div>
+            <h1>{username}</h1>
+          </div>
+
+        
+
+          <div className="profile-recommendations">
+            <div className="recommended-sources-container">
+              <UserRecommendedSources profileUserId={profileUserId} />
+            </div>
+
+            <div className="recommended-feeds-container">
+              <UserRecommendedFeeds profileUserId={profileUserId} />
+            </div>
+          </div>
         </div>
-        <div id="profile-recommended-sources">
-          <h2>Recommended Sources</h2>
-          <p>No recommended sources yet.</p>
+        <div className="profile-right-column">
+          <UserCommentedContent profileUserId={profileUserId} />
         </div>
-        <div id="profile-recommended-sources">
-          <h2>Recommended Users</h2>
-          <p>No recommended sources yet.</p>
-        </div>
-      </div>
-      <div id="profile-div-row-second" className="profile-div-row">
-        <ProfileBumpedFeed profileUserId={profileUserId} />
       </div>
     </div>
   );

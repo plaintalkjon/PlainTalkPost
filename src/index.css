@@ -55,3 +55,7 @@ a {
 .heading {
   text-align: center; /* Centers a heading via className */
 }
+
+a, .user-link, button {
+  cursor: pointer;
+}

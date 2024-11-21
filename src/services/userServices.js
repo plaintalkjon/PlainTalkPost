@@ -2,8 +2,8 @@ import supabase from '../utility/SupabaseClient.js';
 
 export const fetchSourceIdBySourceName = async (sourceName) => {
   const { data, error: getSourceError  } = await supabase
-  .from("sources")
-  .select("sources_id")
+  .from("source")
+  .select("source_id")
   .eq("name", sourceName)
   .single();
 
@@ -11,13 +11,13 @@ export const fetchSourceIdBySourceName = async (sourceName) => {
     throw new Error("Error getting source id");
   }
 
-  return data.sources_id;
+  return data.source_id;
 }
 
 export async function fetchFeedsByUserId(userId) {
   try {
     const { data: rows, error } = await supabase
-      .from("users_feeds")
+      .from("user_feed_follow")
       .select("feed_id")
       .eq("user_id", userId);
 
@@ -33,40 +33,26 @@ export async function fetchFeedsByUserId(userId) {
   }
 }
 
-export async function fetchBumpedFeedByFeedArray(feedArray) {
-  try {
-    const { data: rows, error } = await supabase
-      .from("users_bumps")
-      .select("content_id") // Ensure 'content_id' matches your table schema
-      .in("user_id", feedArray); // Pass feedArray directly as an array
-
-    if (error) {
-      console.error("Error fetching bumped feed:", error);
-      throw new Error("Unable to fetch bumped feed");
-    }
-    if (rows){
-    return rows.map((row) => row.content_id);}
-    else {
-      return [];
-    } // Return an array of content IDs
-  } catch (error) {
-    console.error("Error in fetchBumpedFeedByFeedArray:", error);
-    throw error; // Re-throw the error to be handled by the calling function
-  }
-}
-
-
 export const fetchRecommendedFeedsByUserIdAndFollowedFeeds = async (userId = null, followedFeeds = []) => {
   try {
-
-
-    const { data, error } = await supabase
-      .from('users_extended')
+    let query = supabase
+      .from('user_profile')
       .select('username, profile_picture')
-      .not('user_id', 'in', `(${followedFeeds.join(',')})`) // Exclude followedFeeds
-      .neq('user_id', userId) // Exclude followedFeeds
       .order('follows', { ascending: false })
       .limit(10);
+
+    // Only apply exclusion filters if we have a logged-in user
+    if (userId) {
+      query = query
+        .neq('user_id', userId);
+    }
+
+    if (followedFeeds.length > 0) {
+      query = query
+        .not('user_id', 'in', `(${followedFeeds.join(',')})`)
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Error fetching recommended feeds:', error);
@@ -83,66 +69,37 @@ export const fetchRecommendedFeedsByUserIdAndFollowedFeeds = async (userId = nul
 
 
 export async function fetchUpvotesByUserId(userId) {
-  try {
-    const { data: rows, error } = await supabase
-      .from("users_upvotes")
-      .select("content_id")
-      .eq("user_id", userId);
+  const { data: rows, error } = await supabase
+    .from("user_content_upvote")
+    .select("content_id")
+    .eq("user_id", userId);
 
-    if (error) {
-      console.error("Error fetching user upvotes:", error);
-      throw new Error("Unable to fetch user upvotes");
-    }
-
-    return rows.map((row) => row.content_id); // Return an array of content IDs the user has liked
-  } catch (error) {
-    console.error("Error in fetchUpvotesByUserId:", error);
-    throw error; // Re-throw the error to be handled by the calling function
+  if (error) {
+    console.error("Error fetching user upvotes:", error);
+    throw error;
   }
+
+  return rows.map((row) => row.content_id);
 }
 
 export async function fetchSourcesByUserId(userId) {
-  try {
-    const { data: rows, error } = await supabase
-      .from("users_sources")
-      .select("sources_id")
-      .eq("user_id", userId);
+  const { data: rows, error } = await supabase
+    .from("user_source_follow")
+    .select("source_id")
+    .eq("user_id", userId);
 
-    if (error) {
-      console.error("Error fetching user sources:", error);
-      throw new Error("Unable to fetch user sources");
-    }
-
-    return rows.map((row) => row.sources_id); // Return an array of sources IDs the user follows
-  } catch (error) {
-    console.error("Error in fetchSourcesByUserId:", error);
-    throw error; // Re-throw the error to be handled by the calling function
+  if (error) {
+    console.error("Error fetching user sources:", error);
+    throw error;
   }
-}
 
-export async function fetchBumpsByUserId(userId) {
-  try {
-    const { data: rows, error } = await supabase
-      .from("users_bumps")
-      .select("content_id")
-      .eq("user_id", userId);
-
-    if (error) {
-      console.error("Error fetching user bumps:", error);
-      throw new Error("Unable to fetch user bumps");
-    }
-
-    return rows.map((row) => row.content_id); // Return an array of content IDs the user has liked
-  } catch (error) {
-    console.error("Error in fetchBumpsByUserId:", error);
-    throw error; // Re-throw the error to be handled by the calling function
-  }
+  return rows.map((row) => row.source_id);
 }
 
 export const fetchUsernameAndProfilePictureByUserId = async (userId) => {
   try {
     const { data, error } = await supabase
-      .from('users_extended')
+      .from('user_profile')
       .select('username, profile_picture')
       .eq('user_id', userId)
       .single();
@@ -162,7 +119,7 @@ export const fetchUsernameAndProfilePictureByUserId = async (userId) => {
 export const fetchUserIdAndProfilePictureByUsername = async (username) => {
   try {
     const { data, error } = await supabase
-      .from('users_extended')
+      .from('user_profile')
       .select('user_id,profile_picture')
       .eq('username', username)
       .single();
@@ -212,7 +169,7 @@ export const upvoteContent = async (userId, content_id) => {
 
   // Check if the user has already upvoted this content
   const { data: existingVote, error: existingVoteError } = await supabase
-    .from("users_upvotes")
+    .from("user_content_upvote")
     .select("*")
     .eq("user_id", userId)
     .eq("content_id", content_id)
@@ -227,7 +184,7 @@ export const upvoteContent = async (userId, content_id) => {
   if (existingVote) {
     // If a vote exists, remove it
     const { error: deleteError } = await supabase
-      .from("users_upvotes")
+      .from("user_content_upvote")
       .delete()
       .eq("user_id", userId)
       .eq("content_id", content_id);
@@ -244,8 +201,12 @@ export const upvoteContent = async (userId, content_id) => {
 
   // Add a new vote
   const { error: insertError } = await supabase
-    .from("users_upvotes")
-    .insert([{ user_id: userId, content_id: content_id, timestamp: new Date() }]);
+    .from("user_content_upvote")
+    .insert([{ 
+      user_id: userId, 
+      content_id: content_id, 
+      created_at: new Date() 
+    }]);
 
   if (insertError) {
     console.error("Error adding vote:", insertError);
@@ -255,51 +216,4 @@ export const upvoteContent = async (userId, content_id) => {
   // Increment upvotes count
   const newUpvotesCount = await updateUpvotesCount(content_id, 1);
   return { success: true, message: "Vote added, upvotes incremented", upvotes: newUpvotesCount };
-};
-
-// Function to toggle bump on content
-export const bumpContent = async (userId, content_id) => {
-  if (!userId) throw new Error("Unauthorized: No user logged in");
-
-  // Check if the user has already bumped this content
-  const { data: existingBump, error: existingBumpError } = await supabase
-    .from("users_bumps")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("content_id", content_id)
-    .single();
-
-  if (existingBumpError && existingBumpError.code !== "PGRST116") {
-    // Only allow "not found" errors to proceed
-    console.error("Error checking bump status:", existingBumpError);
-    throw new Error("Error checking bump status");
-  }
-
-  if (existingBump) {
-    // If a bump exists, remove it
-    const { error: deleteError } = await supabase
-      .from("users_bumps")
-      .delete()
-      .eq("user_id", userId)
-      .eq("content_id", content_id);
-
-    if (deleteError) {
-      console.error("Error removing bump:", deleteError);
-      throw new Error("Error removing bump");
-    }
-
-    return { success: true, message: "Bump removed" };
-  }
-
-  // Add a new bump
-  const { error: insertError } = await supabase
-    .from("users_bumps")
-    .insert([{ user_id: userId, content_id: content_id }]);
-
-  if (insertError) {
-    console.error("Error adding bump:", insertError);
-    throw new Error("Error adding bump");
-  }
-
-  return { success: true, message: "Bump added" };
 };

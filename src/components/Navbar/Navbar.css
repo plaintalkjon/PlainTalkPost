@@ -10,7 +10,7 @@
   border-bottom: 2px solid var(--text-color);
 }
 
-.navbar-logo img {
+#navbar-logo {
   height: 25px;
 }
 
@@ -22,4 +22,24 @@
 
 .navbar-links a:hover {
   color: var(--accent-color);
+}
+
+.navbar {
+  width: 100%;
+  border-bottom: 1px solid var(--tidbits-color);
+  background-color: var(--background-color);
+}
+
+.navbar-container {
+  max-width: 1500px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-logo img {
+  height: 25px;
+  width: auto; /* This maintains aspect ratio */
+  display: block; /* Removes any unwanted space below the image */
 }

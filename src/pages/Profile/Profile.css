@@ -1,32 +1,70 @@
 #profile-body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.profile-two-column-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 400px) 1fr;
+    gap: 30px;
+}
+
+.profile-left-column {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    max-width: 1000px;
-    min-width: 80vw;
-    margin: 0 auto; 
-    gap: 20px; /* Adjust spacing between rows */
+    gap: 20px;
 }
 
-.profile-div-row {
-    display: flex; /* Enable flexbox for row alignment */
-    flex-direction: row; /* Arrange child elements in a row */
-    justify-content: space-between; /* Spread children across the row */
-    gap: 20px; /* Add space between child elements */
+.profile-header {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 20px;
 }
 
-#profile-profile-picture-div {
-    max-width: 300px;
-    flex: 0 0 auto; /* Prevents shrinking and ensures the div maintains its size */
+.profile-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: var(--text-color);
 }
 
-#profile-profile-picture {
-    max-width: 300px;
+.profile-picture-container {
+
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
     border-radius: 5px;
     object-fit: cover;
-    position: relative;
-    object-fit: cover;}
+}
 
-.profile-bumped-articles {
-    flex: 1; /* Allows this section to take up remaining space */
+.profile-recommendations {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.recommended-sources-container,
+.recommended-feeds-container {
+    width: 100%;
+}
+
+.profile-right-column {
+    min-width: 0;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .profile-two-column-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-picture-container {
+        max-width: 300px;
+        margin: 0 auto;
+    }
 }

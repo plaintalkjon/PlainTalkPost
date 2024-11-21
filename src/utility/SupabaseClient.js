@@ -9,9 +9,14 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey, {
-  autoRefreshToken: true,
-  persistSession: true,
-  detectSessionInUrl: true,
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    storageKey: 'plain-talk-auth',
+    storage: window.localStorage,
+    flowType: 'pkce'
+  }
 });
 
 export default supabase;

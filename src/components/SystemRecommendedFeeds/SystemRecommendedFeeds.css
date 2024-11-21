@@ -1,0 +1,66 @@
+.system-recommended-feeds {
+  margin: 15px 0;
+  border: solid 1px var(--tidbits-color);
+  border-radius: 5px;
+
+}
+
+.system-feeds-heading {
+  margin: 3px;
+  padding: 5px;
+  color: var(--text-color);
+}
+
+.system-feeds-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* System recommendation specific card styles */
+.user-card {
+  margin-top: 10px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+  height: 60px;
+  min-width: 280px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 5px;
+}
+
+.system-user-card .profile-picture {
+  border-radius: 5px;
+  object-fit: cover;
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+
+.system-user-card.active {
+  background-color: var(--tidbits-color);
+}
+
+.system-user-card:hover {
+  background-color: var(--tidbits-color);
+  cursor: pointer;
+}
+
+.system-follow-button {
+  background-color: var(--text-color);
+  color: #000000;
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, box-shadow 0.2s;
+  height: 30px;
+}
+
+.system-follow-button:hover {
+  background-color: var(--text);
+  color: var(--tidbits);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
