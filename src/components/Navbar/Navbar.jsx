@@ -1,38 +1,25 @@
 // src/components/Navbar/Navbar.js
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useUserProfile } from "../../hooks/useUserProfile";
 import { logout } from '../../services/authServices';
-import supabase from "../../utility/SupabaseClient";
 import "./Navbar.css";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { user, setUser } = useAuth();
-  const [username, setUsername] = useState(null);
-
-  // Fetch username when user is logged in
-  useEffect(() => {
-    const fetchUsername = async () => {
-      if (user) {
-        const { data, error } = await supabase
-          .from('user_profile')
-          .select('username')
-          .eq('user_id', user.id)
-          .single();
-          
-        if (data) {
-          setUsername(data.username);
-        }
-      }
-    };
-
-    fetchUsername();
-  }, [user]);
+  const { 
+    data: profile,
+    isLoading,
+    isError 
+  } = useUserProfile(user?.id);
 
   const handleLogout = async () => {
     try {
       await logout();
       setUser(null);
+      navigate('/');
     } catch (error) {
       console.error('Error during logout:', error);
     }
@@ -42,35 +29,34 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="nav-logo">
-          <img className="navbar-logo" src="/img/plain-talk-post-logo.png" alt="Logo" />
+          <img 
+            className="navbar-logo" 
+            src="/img/plain-talk-post-logo.png" 
+            alt="Logo" 
+          />
         </Link>
         <ul className="navbar-links">
           <li>
             <Link to="/">Home</Link>
           </li>
-          {user && username && (
+          {user && !isLoading && !isError && profile?.username && (
             <>
               <li>
-                <Link to={`/profile/${username}`}>Profile</Link>
+                <Link to={`/profile/${profile.username}`}>Profile</Link>
+              </li>
+              <li>
+                <Link to="/settings">Settings</Link>
               </li>
             </>
           )}
-          {user && (
-            <li>
-              <Link to="/settings">Settings</Link>
-            </li>
-          )}
           <li>
             {user ? (
-              <Link 
-                to="#" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLogout();
-                }}
+              <button 
+                className="nav-link-button"
+                onClick={handleLogout}
               >
                 Log Off
-              </Link>
+              </button>
             ) : (
               <Link to="/login">Log On</Link>
             )}

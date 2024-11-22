@@ -8,17 +8,12 @@ import RecommendedFeeds from "../../components/SystemRecommendedFeeds/SystemReco
 import { useAuth } from "../../contexts/AuthContext.jsx";
 import { useUserData } from "../../hooks/useUserData";
 import Loading from "../../components/Loading/Loading";
+import { useContentFilters } from "../../hooks/useContentFilters";
 
 const Home = () => {
   const { user } = useAuth();
   const { data: userData, isLoading } = useUserData(user?.id);
-  const [filters, setFilters] = useState({
-    sort: "trending",
-    mediaType: null,
-    bias: null,
-    publication: null,
-    category: null,
-  });
+  const { filters } = useContentFilters();
 
   const hasFollowedFeeds = userData?.following?.length > 0;
 
@@ -29,7 +24,7 @@ const Home = () => {
   return (
     <div id="home-columns-container">
       <div id="home-column-left" className="column home-column-left">
-        <ContentFilters filters={filters} setFilters={setFilters} />
+        <ContentFilters />
       </div>
       <div id="home-column-center" className="column home-column-center">
         <ContentDisplayColumn

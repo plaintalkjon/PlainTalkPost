@@ -1,91 +1,145 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login, signup } from '../../services/authServices';
+import { useLogin, useSignup } from '../../hooks/useAuth';
 import { useAuth } from '../../contexts/AuthContext';
 import './Login.css';
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    username: '',
+  });
+  
   const navigate = useNavigate();
   const { user } = useAuth();
+  
+  const loginMutation = useLogin();
+  const signupMutation = useSignup();
 
   // Redirect if already logged in
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       navigate('/');
     }
   }, [user, navigate]);
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    
+    const mutation = isLogin ? loginMutation : signupMutation;
+    const payload = isLogin 
+      ? { 
+          email: formData.email, 
+          password: formData.password 
+        }
+      : { 
+          email: formData.email, 
+          password: formData.password, 
+          username: formData.username 
+        };
 
     try {
-      if (isLogin) {
-        await login(email, password);
-      } else {
-        await signup(email, password, username);
-      }
+      await mutation.mutateAsync(payload);
       navigate('/');
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      // Error handling is managed by the mutation
     }
   };
+
+  const isLoading = loginMutation.isPending || signupMutation.isPending;
+  const error = loginMutation.error || signupMutation.error;
 
   return (
     <div className="login-page">
       <div className="login-container">
         <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
         
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <div className="error-message">
+            {error.message}
+          </div>
+        )}
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
+            <label htmlFor="email">Email</label>
             <input
+              id="email"
+              name="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleInputChange}
+              disabled={isLoading}
               required
             />
           </div>
 
           <div className="form-group">
-            <label>Password</label>
+            <label htmlFor="password">Password</label>
             <input
+              id="password"
+              name="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleInputChange}
+              disabled={isLoading}
               required
             />
           </div>
 
           {!isLogin && (
             <div className="form-group">
-              <label>Username</label>
+              <label htmlFor="username">Username</label>
               <input
+                id="username"
+                name="username"
                 type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={formData.username}
+                onChange={handleInputChange}
+                disabled={isLoading}
                 required
               />
             </div>
           )}
 
-          <button type="submit" className="submit-button">
-            {isLogin ? 'Login' : 'Sign Up'}
+          <button 
+            type="submit" 
+            className="submit-button"
+            disabled={isLoading}
+          >
+            {isLoading 
+              ? 'Loading...' 
+              : isLogin ? 'Login' : 'Sign Up'
+            }
           </button>
         </form>
 
         <button 
           className="toggle-button"
-          onClick={() => setIsLogin(!isLogin)}
+          onClick={() => {
+            setIsLogin(!isLogin);
+            setFormData({
+              email: '',
+              password: '',
+              username: '',
+            });
+          }}
+          disabled={isLoading}
         >
-          {isLogin ? 'Need an account? Sign up' : 'Already have an account? Login'}
+          {isLogin 
+            ? 'Need an account? Sign up' 
+            : 'Already have an account? Login'
+          }
         </button>
       </div>
     </div>

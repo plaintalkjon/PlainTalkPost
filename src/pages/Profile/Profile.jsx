@@ -1,30 +1,47 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import "./Profile.css";
-import { fetchUserIdAndProfilePictureByUsername } from "../../services/userServices";
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useProfile } from "../../hooks/useProfile";
 import UserRecommendedSources from "../../components/UserRecommendedSources/UserRecommendedSources";
 import UserRecommendedFeeds from "../../components/UserRecommendedFeeds/UserRecommendedFeeds";
 import UserCommentedContent from '../../components/UserCommentedContent/UserCommentedContent';
+import Loading from "../../components/Loading/Loading";
+import "./Profile.css";
+
 const Profile = () => {
-  const { username } = useParams(); // Extract username from route parameters
-  const [profilePicture, setProfilePicture] = useState(null); // Initialize state
-  const [profileUserId, setProfileUserId] = useState(null); // Store profile user ID
+  const { username } = useParams();
+  const navigate = useNavigate();
+  
+  const { 
+    data: profileData,
+    isLoading,
+    isError,
+    error
+  } = useProfile(username);
 
-  // Fetch user ID and profile picture
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const { user_id, profile_picture } =
-          await fetchUserIdAndProfilePictureByUsername(username);
-        setProfileUserId(user_id);
-        setProfilePicture(profile_picture);
-      } catch (error) {
-        console.error("Error fetching profile data:", error);
-      }
-    };
+  if (isLoading) {
+    return (
+      <div className="profile-loading">
+        <Loading />
+      </div>
+    );
+  }
 
-    fetchProfileData();
-  }, [username]);
+  if (isError) {
+    return (
+      <div className="profile-error">
+        <h2>Error loading profile</h2>
+        <p>{error.message}</p>
+        <button 
+          className="back-button"
+          onClick={() => navigate(-1)}
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
+
+  const { user_id: profileUserId, profile_picture: profilePicture } = profileData;
 
   return (
     <div id="profile-body">
@@ -37,15 +54,20 @@ const Profile = () => {
                   className="profile-picture"
                   src={`https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${profilePicture}`}
                   alt={`${username}'s Profile Picture`}
+                  onError={(e) => {
+                    e.target.src = '/img/default-profile.png';
+                  }}
                 />
               ) : (
-                <p>Loading profile picture...</p>
+                <img
+                  className="profile-picture"
+                  src="/img/default-profile.png"
+                  alt="Default Profile"
+                />
               )}
             </div>
             <h1>{username}</h1>
           </div>
-
-        
 
           <div className="profile-recommendations">
             <div className="recommended-sources-container">
@@ -57,6 +79,7 @@ const Profile = () => {
             </div>
           </div>
         </div>
+        
         <div className="profile-right-column">
           <UserCommentedContent profileUserId={profileUserId} />
         </div>

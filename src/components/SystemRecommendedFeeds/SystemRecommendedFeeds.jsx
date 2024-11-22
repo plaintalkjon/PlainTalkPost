@@ -1,46 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { fetchRecommendedFeedsByUserIdAndFollowedFeeds } from "../../services/userServices.js";
-import { useAuth } from "../../contexts/AuthContext.jsx";
-import { useUserData } from "../../contexts/UserDataContext.jsx";
-import UserCard from "../UserCard/UserCard.jsx";
+import React from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useUserData } from "../../contexts/UserDataContext";
+import { useSystemRecommendations } from "../../hooks/useSystemRecommendations";
+import UserCard from "../UserCard/UserCard";
+import Loading from "../Loading/Loading";
 import "./SystemRecommendedFeeds.css";
 
 const RecommendedFeeds = () => {
   const { user } = useAuth();
-  const { userData, loading: userDataLoading } = useUserData();
-  const [recommendedFeeds, setRecommendedFeeds] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { userData } = useUserData();
+  
+  const { 
+    data: recommendedFeeds = [], 
+    isLoading,
+    isError,
+  } = useSystemRecommendations(
+    user?.id, 
+    userData?.following
+  );
 
-  useEffect(() => {
-    const fetchRecommendedFeeds = async () => {
-      if (userDataLoading) return;
-      setLoading(true);
+  if (isLoading) return <Loading />;
+  
+  if (isError) return (
+    <div className="system-recommended-feeds">
+      <h5 className="system-feeds-heading">Recommended Feeds</h5>
+      <p>Error loading recommendations</p>
+    </div>
+  );
 
-      try {
-        let feedDetails;
-        if (user) {
-          // Use following array from userData context
-          feedDetails = await fetchRecommendedFeedsByUserIdAndFollowedFeeds(
-            user.id, 
-            userData.following || []
-          );
-        } else {
-          // For non-logged-in users, get general recommendations
-          feedDetails = await fetchRecommendedFeedsByUserIdAndFollowedFeeds(null, []);
-        }
-
-        setRecommendedFeeds(feedDetails);
-      } catch (error) {
-        console.error("Error fetching recommended feeds:", error.message);
-      }
-
-      setLoading(false);
-    };
-
-    fetchRecommendedFeeds();
-  }, [user, userData.following, userDataLoading]);
-
-  if (loading || userDataLoading) return <p>Loading...</p>;
+  if (recommendedFeeds.length === 0) return (
+    <div className="system-recommended-feeds">
+      <h5 className="system-feeds-heading">Recommended Feeds</h5>
+      <p>No recommendations available</p>
+    </div>
+  );
 
   return (
     <div className="system-recommended-feeds">

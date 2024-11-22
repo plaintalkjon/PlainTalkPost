@@ -66,3 +66,16 @@
     margin: 0;
     line-height: 1.4;
   }
+  
+  .comments-error {
+    color: #e74c3c;
+    padding: 8px;
+    margin: 8px 0;
+    font-size: 0.9em;
+  }
+  
+  .comments-loading {
+    text-align: center;
+    padding: 8px;
+    color: #666;
+  }

@@ -1,146 +1,57 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState } from "react";
+import { useInView } from 'react-intersection-observer';
 import ContentCard from "../ContentCard/ContentCard";
 import { useUserData } from '../../contexts/UserDataContext';
-import { fetchContent } from "../../services/contentServices";
+import { useContent, useNewContentCheck } from '../../hooks/useContent';
 import "./ContentDisplayColumn.css";
 import Loading from '../Loading/Loading';
 
 const ContentDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) => {
   const [feedFilter, setFeedFilter] = useState(userId ? initialFilter : "");
-  const [content, setContent] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [loadedContentIds, setLoadedContentIds] = useState([]);
   const [newestTimestamp, setNewestTimestamp] = useState(null);
-  const [hasNewContent, setHasNewContent] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [isChangingFilter, setIsChangingFilter] = useState(false); // Add this state
+  
+  const { userData } = useUserData();
+  
+  const { 
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isLoading,
+    isError,
+  } = useContent({ filters, feedFilter, userData });
 
-  const loadMoreRef = useRef(null);
+  const { data: hasNewContent } = useNewContentCheck({
+    filters,
+    feedFilter,
+    userData,
+    newestTimestamp,
+  });
 
-  const { userData, loading: userDataLoading } = useUserData();
-
-  const fetchFilteredContent = async (append = false, noLoadedContent = false) => {
-    if (loading || (!hasMore && append)) return;
-
-    setLoading(true);
-    if (!append) setIsChangingFilter(true);
-
-    const options = {
-      ...filters,
-      sources: feedFilter === "yourFeed" ? userData.sources : [],
-      loadedContentIds: noLoadedContent ? [] : loadedContentIds,
-    };
-
-    try {
-      const results = await fetchContent(options);
-
-      if (results.length === 0) {
-        setHasMore(false);
-      } else {
-        const newContentIds = results.map((content) => content.content_id);
-        
-        setLoadedContentIds((prevIds) => [...prevIds, ...newContentIds]);
-        setContent((prevContent) => {
-          if (noLoadedContent) return results;
-          
-          const filteredResults = results.filter(
-            (content) =>
-              !prevContent.some(
-                (existingContent) =>
-                  existingContent.content_id === content.content_id
-              )
-          );
-
-          if (filteredResults.length === 0 && append) {
-            setHasMore(false);
-          }
-
-          return append ? [...prevContent, ...filteredResults] : filteredResults;
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching content:", error);
-      setHasMore(false);
-    } finally {
-      setLoading(false);
-      setIsChangingFilter(false);
-    }
-  };
-
-  const handleObserver = useCallback(
-    (entries) => {
-      const target = entries[0];
-      if (target.isIntersecting && !loading) {
-        fetchFilteredContent(true);
+  const { ref: loadMoreRef } = useInView({
+    threshold: 0,
+    rootMargin: '200px',
+    onChange: (inView) => {
+      if (inView && hasNextPage && !isFetching) {
+        fetchNextPage();
       }
     },
-    [loading]
-  );
+  });
 
-  useEffect(() => {
-    if (loading || (userId && userData.sources.length === 0)) return;
-
-    const observer = new IntersectionObserver(handleObserver, {
-      root: null,
-      rootMargin: "20px",
-      threshold: 1.0,
-    });
-
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-
-    return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
-      }
-    };
-  }, [handleObserver, loading]);
-
-  useEffect(() => {
-    if (userDataLoading) return;
-    fetchFilteredContent(false, true);
-  }, [feedFilter, filters, userDataLoading]);
-
-  // Check for new content periodically
-  const checkForNewContent = async () => {
-    if (!newestTimestamp) return;
-    
-    const options = {
-      ...filters,
-      sources: feedFilter === "yourFeed" ? userData.sources : [],
-      limit: 1,
-      newerThan: newestTimestamp,
-    };
-
-    try {
-      const newer = await fetchContent(options);
-      setHasNewContent(newer.length > 0);
-    } catch (error) {
-      console.error("Error checking for new content:", error);
-    }
+  const handleFilterChange = (newFilter) => {
+    setFeedFilter(newFilter);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Set up periodic check for new content
-  useEffect(() => {
-    if (userDataLoading) return;
-    
-    const interval = setInterval(checkForNewContent, 60000); // Check every minute
-    return () => clearInterval(interval);
-  }, [userDataLoading, newestTimestamp]);
-
-  // Move the filter change handler to a memoized callback
-  const handleFilterChange = useCallback((newFilter) => {
-    setFeedFilter(newFilter);
-    setHasMore(true);
-    setLoadedContentIds([]);
-    // Reset scroll position when changing filters
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
-
-  if (userDataLoading) {
+  if (isLoading) {
     return <Loading size="large" />;
   }
+
+  if (isError) {
+    return <div>Error loading content</div>;
+  }
+
+  const allContent = data?.pages.flatMap(page => page.items) ?? [];
 
   return (
     <div id="content-display-column">
@@ -149,13 +60,13 @@ const ContentDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) =
           className="load-new-content-btn"
           onClick={() => {
             setNewestTimestamp(null);
-            setHasNewContent(false);
-            fetchFilteredContent(false, true);
+            window.location.reload(); // We can improve this later
           }}
         >
           Load New Content
         </button>
       )}
+      
       <div id="home-column-center-filters">
         {userId && (
           <button
@@ -183,24 +94,23 @@ const ContentDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) =
           Show All
         </button>
       </div>
+
+      {allContent.map((content) => (
+        <ContentCard
+          key={content.content_id}
+          content={content}
+          userId={userId}
+        />
+      ))}
       
-      {isChangingFilter ? (
-        <Loading />
-      ) : (
-        <>
-          {content.map((content) => (
-            <ContentCard
-              key={content.content_id}
-              content={content}
-              userId={userId}
-            />
-          ))}
-          {loading && <Loading />}
-          {!loading && !hasMore && content.length > 0 && <p>All content available is loaded</p>}
-          {!loading && content.length === 0 && <p>No content found</p>}
-          {hasMore && <div ref={loadMoreRef} className="load-more-trigger"></div>}
-        </>
-      )}
+      {isFetching && <Loading />}
+      {!hasNextPage && allContent.length > 0 && 
+        <p>All content available is loaded</p>
+      }
+      {!isFetching && allContent.length === 0 && 
+        <p>No content found</p>
+      }
+      {hasNextPage && <div ref={loadMoreRef} className="load-more-trigger"></div>}
     </div>
   );
 };

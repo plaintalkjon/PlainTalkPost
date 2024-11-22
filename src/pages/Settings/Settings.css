@@ -72,3 +72,56 @@
   font-size: 1rem;
   color: green;
 }
+
+.profile-pic-label {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.profile-pic-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-radius: 50%;
+}
+
+.profile-pic-label:hover .profile-pic-overlay {
+  opacity: 1;
+}
+
+.profile-pic-overlay span {
+  color: white;
+  font-size: 14px;
+}
+
+.settings-message {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.settings-message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.settings-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+input:disabled,
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

@@ -1,67 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { fetchCommentsByContentId } from '../../services/commentServices';
+import React from 'react';
+import { useComments, formatTimestamp } from '../../hooks/useComments';
+import Loading from '../Loading/Loading';
 import './Comments.css';
 
-const Comments = ({ contentId, comments, setComments }) => {
-  const [loading, setLoading] = useState(true);
+const Comments = ({ contentId }) => {
+  const { 
+    data: comments = [], 
+    isLoading,
+    isError,
+    error 
+  } = useComments(contentId);
 
-  useEffect(() => {
-    const loadComments = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchCommentsByContentId(contentId);
-        setComments(data);
-      } catch (error) {
-        console.error('Error loading comments:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadComments();
-  }, [contentId]);
+  if (isLoading) {
+    return <Loading size="small" />;
+  }
 
-  const formatTimestamp = (timestamp) => {
-    const now = new Date();
-    const commentDate = new Date(timestamp);
-    const diffInHours = Math.floor((now - commentDate) / (1000 * 60 * 60));
-    const diffInMinutes = Math.floor((now - commentDate) / (1000 * 60));
+  if (isError) {
+    return (
+      <div className="comments-error">
+        Error loading comments: {error.message}
+      </div>
+    );
+  }
 
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes} min. ago`;
-    } else if (diffInHours < 24) {
-      return `${diffInHours} hr. ago`;
-    } else {
-      return commentDate.toLocaleDateString();
-    }
-  };
+  if (comments.length === 0) {
+    return null;
+  }
 
   return (
-    <>      
-      {loading ? (
-        <p>Loading comments...</p>
-      ) : comments.length > 0 && (
-        <div className="comments-section">
-          <div className="comments-list">
-            {comments.map((comment) => (
-              <div key={comment.comment_id} className="comment">
-                <div className="comment-header">
-                  <img
-                    src={`https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${comment.user_profile.profile_picture}`}
-                    alt={`${comment.user_profile.username}'s profile`}
-                    className="comment-avatar"
-                  />
-                  <span className="comment-username">{comment.user_profile.username}</span>
-                  <span className="comment-date">
-                    {formatTimestamp(comment.created_at)}
-                  </span>
-                </div>
-                <p className="comment-text">{comment.comment_text}</p>
-              </div>
-            ))}
+    <div className="comments-section">
+      <div className="comments-list">
+        {comments.map((comment) => (
+          <div key={comment.comment_id} className="comment">
+            <div className="comment-header">
+              <img
+                src={comment.user_profile.profile_picture
+                  ? `https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${comment.user_profile.profile_picture}`
+                  : '/img/default-profile.png'
+                }
+                alt={`${comment.user_profile.username}'s profile`}
+                className="comment-avatar"
+                onError={(e) => {
+                  e.target.src = '/img/default-profile.png';
+                }}
+              />
+              <span className="comment-username">
+                {comment.user_profile.username}
+              </span>
+              <span className="comment-date">
+                {formatTimestamp(comment.created_at)}
+              </span>
+            </div>
+            <p className="comment-text">{comment.comment_text}</p>
           </div>
-        </div>
-      )}
-    </>
+        ))}
+      </div>
+    </div>
   );
 };
 

@@ -1,53 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { fetchUsernameAndProfilePictureByUserId } from "../../services/userServices";
+import React from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { useUserData } from "../../contexts/UserDataContext";
+import { useUserData } from "../../hooks/useUserData";
+import { useFollowedFeeds } from "../../hooks/useFollowedFeeds";
 import UserCard from "../UserCard/UserCard";
+import Loading from "../Loading/Loading";
 import "./UserFollowedFeeds.css";
 
 const UserFollowedFeeds = () => {
   const { user } = useAuth();
-  const { userData, loading: userDataLoading } = useUserData();
-  const [yourFollowedFeeds, setYourFollowedFeeds] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: userData, isLoading: userDataLoading } = useUserData(user?.id);
+  
+  const { 
+    data: followedFeeds,
+    isLoading: feedsLoading,
+    isError,
+  } = useFollowedFeeds(userData?.following, {
+    enabled: !!userData?.following
+  });
 
-  useEffect(() => {
-    if (!user || userDataLoading || !userData.following) return;
-
-    const fetchUserFeeds = async () => {
-      setLoading(true);
-
-      try {
-        // Use following array from userData context
-        const feedDetails = await Promise.all(
-          userData.following.map(async (feedId) => {
-            const userData = await fetchUsernameAndProfilePictureByUserId(feedId);
-            return { feed_id: feedId, ...userData };
-          })
-        );
-
-        setYourFollowedFeeds(feedDetails);
-      } catch (error) {
-        console.error("Error fetching followed feeds:", error.message);
-      }
-
-      setLoading(false);
-    };
-
-    fetchUserFeeds();
-  }, [user, userData.following, userDataLoading]);
-
-  if (loading || userDataLoading) return <p>Loading...</p>;
+  if (userDataLoading || feedsLoading) return <Loading />;
+  
+  if (isError) return <p>Error loading followed feeds</p>;
+  
+  if (!followedFeeds?.length) return null;
 
   return (
     <div className="user-followed-feeds-container">
       <h5 className="user-followed-feeds-heading">Followed Feeds</h5>
       <ul className="user-followed-feeds-list">
-        {yourFollowedFeeds.map((feed) => (
+        {followedFeeds.map((feed) => (
           <UserCard
-            key={feed.username + feed.feed_id}
+            key={feed.username}
             username={feed.username}
             profilePicture={feed.profile_picture}
+            userId={feed.feed_id}
             cardType="system"
           />
         ))}

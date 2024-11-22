@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { updateSettings, uploadPicture as uploadProfilePicture } from "../../services/settingsServices";
+import { useUpdateSettings, useProfilePictureUpload, validateSettings } from "../../hooks/useSettings";
 import "./Settings.css";
 
 const Settings = () => {
-  const { user } = useAuth(); // Get current user from auth context
+  const { user } = useAuth();
+  const updateSettingsMutation = useUpdateSettings();
+  const profilePictureMutation = useProfilePictureUpload();
 
-  // Consolidated form state into a single object for better management
   const [formData, setFormData] = useState({
     username: user?.username || "",
     email: user?.email || "",
@@ -14,85 +15,68 @@ const Settings = () => {
     repeatPassword: "",
   });
 
-  // State for profile picture URL
-  const [profilePic, setProfilePic] = useState(user?.profile_picture || "/default-profile-pic.png");
-  // State for feedback messages to user
   const [message, setMessage] = useState("");
-  // Loading state for async operations
-  const [loading, setLoading] = useState(false);
 
-  // Generic handler for all form input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      // Remove 'settings-' prefix from id to match state keys
       [id.replace('settings-', '')]: value
     }));
   };
 
-  // Handler for profile picture file upload
   const handleProfilePictureChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    // File validation
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
-
-    // Check file type
-    if (!allowedTypes.includes(file.type)) {
-      setMessage("Only JPG, JPEG and PNG images are allowed.");
-      return;
-    }
-    // Check file size
-    if (file.size > maxSize) {
-      setMessage("File size must be less than 5MB.");
-      return;
-    }
-
-    // Upload profile picture
-    setLoading(true);
     try {
-      const { profilePicUrl } = await uploadProfilePicture(user.id, file);
-      setProfilePic(profilePicUrl);
-      setMessage("Profile picture updated successfully!");
+      validateSettings.file(file);
+      
+      await profilePictureMutation.mutateAsync(
+        { userId: user.id, file },
+        {
+          onSuccess: () => {
+            setMessage("Profile picture updated successfully!");
+          },
+        }
+      );
     } catch (error) {
       setMessage(error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
-  // Handler for form submission
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    const { username, email, password, repeatPassword } = formData;
 
-    // Validation checks
-    if (!username && !email && !password) {
-      setMessage("Please update at least one field.");
-      return;
-    }
-
-    if (password && password !== repeatPassword) {
-      setMessage("Passwords do not match!");
-      return;
-    }
-
-    // Update user settings
-    setLoading(true);
     try {
-      const result = await updateSettings(user.id, { username, email, password });
-      setMessage(result.message || "Settings updated successfully!");
-      // Clear sensitive data after successful update
-      setFormData(prev => ({ ...prev, password: "", repeatPassword: "" }));
+      validateSettings.form(formData);
+
+      await updateSettingsMutation.mutateAsync(
+        {
+          userId: user.id,
+          settings: {
+            username: formData.username,
+            email: formData.email,
+            password: formData.password,
+          }
+        },
+        {
+          onSuccess: () => {
+            setMessage("Settings updated successfully!");
+            setFormData(prev => ({ 
+              ...prev, 
+              password: "", 
+              repeatPassword: "" 
+            }));
+          },
+        }
+      );
     } catch (error) {
-      setMessage(error.message || "Failed to update settings.");
-    } finally {
-      setLoading(false);
+      setMessage(error.message);
     }
   };
+
+  const isLoading = updateSettingsMutation.isPending || profilePictureMutation.isPending;
 
   return (
     <div className="settings-page">
@@ -100,15 +84,22 @@ const Settings = () => {
         <h1>Settings</h1>
       </div>
 
-      {/* Profile Picture Section */}
       <div className="profile-pic-section">
-        <label htmlFor="profilePictureInput">
+        <label htmlFor="profilePictureInput" className="profile-pic-label">
           <img
             className="profile-pic"
-            src={`https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${profilePic}`}
+            src={user?.profile_picture
+              ? `https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${user.profile_picture}`
+              : "/img/default-profile.png"
+            }
             alt="Profile"
-            loading="lazy"
+            onError={(e) => {
+              e.target.src = "/img/default-profile.png";
+            }}
           />
+          <div className="profile-pic-overlay">
+            <span>Change Picture</span>
+          </div>
         </label>
         <input
           type="file"
@@ -116,66 +107,63 @@ const Settings = () => {
           accept="image/jpeg,image/jpg,image/png"
           style={{ display: "none" }}
           onChange={handleProfilePictureChange}
+          disabled={isLoading}
         />
       </div>
 
-      {/* Settings Form Section */}
       <div className="settings-form-section">
         <form id="settings-form" onSubmit={handleFormSubmit}>
-          {/* Username Field */}
+          {/* Form fields remain the same */}
           <label htmlFor="settings-username">Username</label>
           <input
             type="text"
             id="settings-username"
-            placeholder="Username"
             value={formData.username}
             onChange={handleInputChange}
+            disabled={isLoading}
           />
 
-          {/* Email Field */}
           <label htmlFor="settings-email">Email</label>
           <input
             type="email"
             id="settings-email"
-            placeholder="Email"
             value={formData.email}
             onChange={handleInputChange}
+            disabled={isLoading}
           />
 
-          {/* Password Field */}
-          <label htmlFor="settings-password">Password</label>
+          <label htmlFor="settings-password">New Password</label>
           <input
             type="password"
             id="settings-password"
-            placeholder="Password"
             value={formData.password}
             onChange={handleInputChange}
+            disabled={isLoading}
           />
 
-          {/* Repeat Password Field */}
-          <label htmlFor="settings-repeat-password">Repeat Password</label>
+          <label htmlFor="settings-repeat-password">Repeat New Password</label>
           <input
             type="password"
             id="settings-repeat-password"
-            placeholder="Repeat Password"
             value={formData.repeatPassword}
             onChange={handleInputChange}
+            disabled={isLoading}
           />
 
-          {/* Submit Button */}
           <button 
             type="submit" 
             className="save-button"
-            disabled={loading}
+            disabled={isLoading}
           >
-            {loading ? "Saving..." : "Save Settings"}
+            {isLoading ? "Saving..." : "Save Settings"}
           </button>
         </form>
       </div>
 
-      {/* Feedback Message Display */}
       {message && (
-        <div className="settings-message">
+        <div className={`settings-message ${
+          message.includes("Error") ? "error" : "success"
+        }`}>
           {message}
         </div>
       )}
