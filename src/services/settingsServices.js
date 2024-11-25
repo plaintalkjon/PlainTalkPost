@@ -1,4 +1,3 @@
-import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import supabase from "../utility/SupabaseClient";
 import {
@@ -108,6 +107,16 @@ const updateUserProfilePicture = async (userId, profilePicFileName) => {
   }
 };
 
+// Use string manipulation instead of path module
+const getFileExtension = (filename) => {
+  return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+};
+
+const generateFileName = (originalName) => {
+  const ext = getFileExtension(originalName);
+  return `${uuidv4()}.${ext}`;
+};
+
 // Main Export Functions
 export async function uploadPicture(userId, file) {
   try {
@@ -115,8 +124,7 @@ export async function uploadPicture(userId, file) {
     validateFile(file);
 
     // Generate unique filename
-    const fileExtension = path.extname(file.name);
-    const uniqueFileName = `${uuidv4()}${fileExtension}`;
+    const uniqueFileName = generateFileName(file.name);
 
     // Get previous picture for cleanup
     const previousPicture = await getPreviousProfilePicture(userId);

@@ -1,0 +1,19 @@
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .home-link {
+    color: var(--accent-color);
+    text-decoration: underline;
+    margin-top: 1rem;
+  }
+  
+  .home-link:hover {
+    color: var(--hover-color);
+  }

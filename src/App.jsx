@@ -9,6 +9,8 @@ import Profile from "./pages/Profile/Profile";
 import Login from "./pages/Login/Login";
 import { UserDataProvider } from './contexts/UserDataContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import ErrorBoundary from './components/ErrorBoundary';
+import NotFound from './pages/NotFound/NotFound';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,13 +23,15 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <UserDataProvider>
-          <AppContent />
-        </UserDataProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <UserDataProvider>
+            <AppContent />
+          </UserDataProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
@@ -46,6 +50,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

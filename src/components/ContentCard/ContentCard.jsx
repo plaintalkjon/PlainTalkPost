@@ -54,10 +54,10 @@ const ContentCard = ({ content, userId }) => {
     <div className={`content-card ${content.source?.political_bias}`}>
       {/* Content title and description */}
       <h3>{content.title}</h3>
-      <p className="content-description">{content.description}</p>
+      {content.media_type == "Article" && <p className="content-description">{content.description}</p>}
 
       {/* Video content */}
-      <div className={`content-video-container ${showVideo ? "show" : ""}`}>
+      {content.media_type == "Video" && <div className={`content-video-container ${showVideo ? "show" : ""}`}>
         {content.video_url && (
           <iframe
             src={content.video_url}
@@ -69,7 +69,7 @@ const ContentCard = ({ content, userId }) => {
             title="Embedded video"
           />
         )}
-      </div>
+      </div>}
 
       <div className="tidbits-container">
         {/* Upvote button */}
