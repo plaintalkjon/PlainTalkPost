@@ -3,63 +3,71 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useUserProfile } from "../../hooks/useUserProfile";
-import { logout } from '../../services/authServices';
+import { logout } from "../../services/authServices";
 import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { user, setUser } = useAuth();
-  const { 
-    data: profile,
-    isLoading,
-    isError 
-  } = useUserProfile(user?.id);
+  const { data: profile, isLoading, isError } = useUserProfile(user?.id);
 
   const handleLogout = async () => {
     try {
       await logout();
       setUser(null);
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error("Error during logout:", error);
     }
+  };
+
+  const handleNavClick = (path) => {
+    navigate(path);
   };
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="nav-logo">
-          <img 
-            className="navbar-logo" 
-            src="/img/plain-talk-post-logo.png" 
-            alt="Logo" 
+          <img
+            className="navbar-logo"
+            src="/img/plain-talk-post-logo.png"
+            alt="Logo"
           />
         </Link>
         <ul className="navbar-links">
           <li>
-            <Link to="/">Home</Link>
+            <button className="nav-button" onClick={() => handleNavClick("/")}>
+              Home
+            </button>
           </li>
           {user && !isLoading && !isError && profile?.username && (
             <>
               <li>
-                <Link to={`/profile/${profile.username}`}>Profile</Link>
+                <button
+                  className="nav-button"
+                  onClick={() => handleNavClick(`/profile/${profile.username}`)}
+                >
+                  Profile
+                </button>
               </li>
               <li>
-                <Link to="/settings">Settings</Link>
+                <button
+                  className="nav-button"
+                  onClick={() => handleNavClick("/settings")}
+                >
+                  Settings
+                </button>
               </li>
             </>
           )}
           <li>
-            {user ? (
-              <button 
-                className="nav-link-button"
-                onClick={handleLogout}
-              >
-                Log Off
-              </button>
-            ) : (
-              <Link to="/login">Log On</Link>
-            )}
+            <button
+              className="nav-button"
+              onClick={user ? handleLogout : () => handleNavClick("/login")}
+            >
+              {user ? "Log Off" : "Log On"}
+            </button>
           </li>
         </ul>
       </div>
