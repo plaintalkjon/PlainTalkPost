@@ -52,24 +52,52 @@ const ContentCard = ({ content, userId }) => {
 
   return (
     <div className={`content-card ${content.source?.political_bias}`}>
-      {/* Content title and description */}
-      <h3>{content.title}</h3>
-      {content.media_type == "Article" && <p className="content-description">{content.description}</p>}
+      {/* Article: Opens in new tab */}
+      {content.media_type === "Article" && (
+        <h3>
+          <a 
+            href={content.link} 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            {content.title}
+          </a>
+        </h3>
+      )}
 
-      {/* Video content */}
-      {content.media_type == "Video" && <div className={`content-video-container ${showVideo ? "show" : ""}`}>
-        {content.video_url && (
-          <iframe
-            src={content.video_url}
-            width="100%"
-            height="315"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            title="Embedded video"
-          />
-        )}
-      </div>}
+      {/* Video: Toggles video display */}
+      {content.media_type === "Video" && (
+        <>
+          <h3>
+            <a 
+              onClick={(e) => {
+                e.preventDefault();
+                setShowVideo(!showVideo);
+              }}
+              href="#"
+            >
+              {content.title}
+            </a>
+          </h3>
+          <div className={`content-video-container ${showVideo ? "show" : ""}`}>
+            {showVideo && content.link && (
+              <iframe
+                src={`https://www.youtube.com/embed/${content.link.split('?v=')[1]}`}
+
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title="Embedded video"
+              />
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Description for articles */}
+      {content.media_type === "Article" && (
+        <p className="content-description">{content.description}</p>
+      )}
 
       <div className="tidbits-container">
         {/* Upvote button */}
