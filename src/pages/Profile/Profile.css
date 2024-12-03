@@ -57,6 +57,13 @@
     min-width: 0;
 }
 
+.recommended-card {
+    display: flex;
+    flex-direction: row;
+    gap: 0px;
+    margin: 0;
+}
+
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
     .profile-two-column-layout {

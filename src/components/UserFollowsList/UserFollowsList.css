@@ -1,0 +1,38 @@
+.follows-list-container {
+    background: var(--background-color);
+    border-radius: 8px;
+    border: 1px solid var(--tidbits-color);
+    padding: 1rem;
+  }
+  
+  .follows-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+  
+  .following-header, .no-follows {
+    position: relative;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .load-more {
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  /* Scrollbar styling */
+  .follows-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .follows-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+  }
+  
+  .follows-list::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 3px;
+  }

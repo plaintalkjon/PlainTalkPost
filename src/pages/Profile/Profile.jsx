@@ -3,20 +3,17 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useProfile } from "../../hooks/useProfile";
 import UserRecommendedSources from "../../components/UserRecommendedSources/UserRecommendedSources";
 import UserRecommendedFeeds from "../../components/UserRecommendedFeeds/UserRecommendedFeeds";
-import UserCommentedContent from '../../components/UserCommentedContent/UserCommentedContent';
+import UserCommentedContent from "../../components/UserCommentedContent/UserCommentedContent";
 import Loading from "../../components/Loading/Loading";
+import UserFollowsList from "../../components/UserFollowsList/UserFollowsList";
+
 import "./Profile.css";
 
 const Profile = () => {
   const { username } = useParams();
   const navigate = useNavigate();
-  
-  const { 
-    data: profileData,
-    isLoading,
-    isError,
-    error
-  } = useProfile(username);
+
+  const { data: profileData, isLoading, isError, error } = useProfile(username);
 
   if (isLoading) {
     return (
@@ -31,17 +28,15 @@ const Profile = () => {
       <div className="profile-error">
         <h2>Error loading profile</h2>
         <p>{error.message}</p>
-        <button 
-          className="back-button"
-          onClick={() => navigate(-1)}
-        >
+        <button className="back-button" onClick={() => navigate(-1)}>
           Go Back
         </button>
       </div>
     );
   }
 
-  const { user_id: profileUserId, profile_picture: profilePicture } = profileData;
+  const { user_id: profileUserId, profile_picture: profilePicture } =
+    profileData;
 
   return (
     <div id="profile-body">
@@ -55,7 +50,7 @@ const Profile = () => {
                   src={`https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${profilePicture}`}
                   alt={`${username}'s Profile Picture`}
                   onError={(e) => {
-                    e.target.src = '/img/default-profile.png';
+                    e.target.src = "/img/default-profile.png";
                   }}
                 />
               ) : (
@@ -78,8 +73,12 @@ const Profile = () => {
               <UserRecommendedFeeds profileUserId={profileUserId} />
             </div>
           </div>
+          <div className="profile-container">
+            {/* ... other profile content */}
+            <UserFollowsList profileUserId={profileUserId} />
+          </div>
         </div>
-        
+
         <div className="profile-right-column">
           <UserCommentedContent profileUserId={profileUserId} />
         </div>

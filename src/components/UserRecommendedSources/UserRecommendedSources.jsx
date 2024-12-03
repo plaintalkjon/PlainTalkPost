@@ -107,7 +107,7 @@ const UserRecommendedSources = ({ profileUserId }) => {
 
       <ul className="source-list">
         {recommendations.map((rec) => (
-          <li key={rec.source_id} className="source-item">
+          <li key={rec.source_id} className={`source-item ${rec.source.political_bias}`}>
             {isEditing && isOwnProfile && (
               <button
                 className="remove-button"

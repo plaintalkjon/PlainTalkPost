@@ -1,27 +1,4 @@
-.left {
-  border-left: 4px solid var(--left-bias-color);
-  border-radius: 5px;
-}
-.leanleft {
-  border-left: 4px solid var(--leanleft-bias-color);
-  border-radius: 5px;
-}
-.center {
-  border-left: 4px solid var(--center-bias-color);
-  border-radius: 5px;
-}
-.leanright {
-  border-left: 4px solid var(--leanright-bias-color);
-  border-radius: 5px;
-}
-.right {
-  border-left: 4px solid var(--right-bias-color);
-  border-radius: 5px;
-}
-.substack {
-  border-left: 4px solid var(--substack-bias-color);
-  border-radius: 5px;
-}
+
 
 .content-card {
   background-color: var(--background);
