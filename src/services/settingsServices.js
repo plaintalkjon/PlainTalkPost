@@ -83,7 +83,7 @@ const deleteFromS3 = async (fileName) => {
 // Database Operations
 const getPreviousProfilePicture = async (userId) => {
   const { data, error } = await supabase
-    .from("users_extended")
+    .from("user_profile")
     .select("profile_picture")
     .eq("user_id", userId)
     .single();
@@ -155,15 +155,16 @@ export async function updateSettings(userId, settings) {
     // Update username if provided
     if (username) {
       const { error: usernameError } = await supabase
-        .from("users_extended")
+        .from("user_profile")
         .update({ username })
         .eq("user_id", userId);
 
       if (usernameError) {
         if (usernameError.message.includes("duplicate key value")) {
           throw new Error("Username already taken. Please choose a different one.");
+        } else {
+          throw new Error("Error updating username.");
         }
-        throw new Error("Error updating username.");
       }
     }
 

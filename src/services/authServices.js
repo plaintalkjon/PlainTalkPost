@@ -18,7 +18,7 @@ export const signup = async (email, password, username) => {
 
   if (error) throw new Error(error.message);
 
-  // Insert additional user data (username) into 'users_extended'
+  // Insert additional user data (username) into 'user_profile'
   const userId = data.user.id;
   const { error: profileError } = await supabase
     .from('user_profile')
