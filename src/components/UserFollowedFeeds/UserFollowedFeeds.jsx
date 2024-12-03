@@ -1,9 +1,9 @@
 import React from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useUserData } from "../../hooks/useUserData";
-import { useFollowedFeeds } from "../../hooks/useFollowedFeeds";
-import UserCard from "../UserCard/UserCard";
-import Loading from "../Loading/Loading";
+import { useAuth } from "@contexts/AuthContext";
+import { useUserData } from "@hooks/useUserData";
+import { useFollowedFeeds } from "@hooks/useFollowedFeeds";
+import UserCard from "@components/UserCard/UserCard";
+import Loading from "@components/Loading/Loading";
 import "./UserFollowedFeeds.css";
 
 const UserFollowedFeeds = () => {

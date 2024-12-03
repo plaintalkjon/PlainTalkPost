@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchUserIdAndProfilePictureByUsername } from '../services/userServices';
+import { fetchUserIdAndProfilePictureByUsername } from '@services/userServices';
 
 export function useProfile(username) {
   return useQuery({

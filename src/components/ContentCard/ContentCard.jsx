@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useUserData } from "../../hooks/useUserData";
-import { useContentOperations } from "../../hooks/useContentOperations";
-import Comments from "../Comments/Comments";
+import { useAuth } from "@contexts/AuthContext";
+import { useUserData } from "@hooks/useUserData";
+import { useContentOperations } from "@hooks/useContentOperations";
+import Comments from "@components/Comments/Comments";
 import "./ContentCard.css";
 
 const ContentCard = ({ content, userId }) => {

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchRecommendedFeedsByUserIdAndFollowedFeeds } from '../services/userServices';
+import { fetchRecommendedFeedsByUserIdAndFollowedFeeds } from '@services/userServices';
 
 export function useSystemRecommendations(userId, following = []) {
   return useQuery({

@@ -1,9 +1,9 @@
 // src/components/Navbar/Navbar.js
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { useUserProfile } from "../../hooks/useUserProfile";
-import { logout } from "../../services/authServices";
+import { useAuth } from "@contexts/AuthContext";
+import { useUserProfile } from "@hooks/useUserProfile";
+import { logout } from "@services/authServices";
 import "./Navbar.css";
 
 const Navbar = () => {

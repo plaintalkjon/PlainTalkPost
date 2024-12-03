@@ -1,8 +1,8 @@
 import React from 'react';
 import ContentCard from '../ContentCard/ContentCard';
-import { useCommentedContent } from '../../hooks/useCommentedContent';
-import Loading from '../Loading/Loading';
-import './UserCommentedContent.css';
+import { useCommentedContent } from "@hooks/useCommentedContent";
+import Loading from "@components/Loading/Loading";
+import "./UserCommentedContent.css";
 
 const UserCommentedContent = ({ profileUserId }) => {
   const { 

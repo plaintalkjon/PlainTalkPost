@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useUpdateSettings, useProfilePictureUpload, validateSettings } from "../../hooks/useSettings";
+import { useAuth } from "@contexts/AuthContext";
+import { useUpdateSettings, useProfilePictureUpload, validateSettings } from "@hooks/useSettings";
 import "./Settings.css";
 
 const Settings = () => {

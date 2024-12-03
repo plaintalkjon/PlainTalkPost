@@ -1,11 +1,11 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useProfile } from "../../hooks/useProfile";
-import UserRecommendedSources from "../../components/UserRecommendedSources/UserRecommendedSources";
-import UserRecommendedFeeds from "../../components/UserRecommendedFeeds/UserRecommendedFeeds";
-import UserCommentedContent from "../../components/UserCommentedContent/UserCommentedContent";
-import Loading from "../../components/Loading/Loading";
-import UserFollowsList from "../../components/UserFollowsList/UserFollowsList";
+import { useProfile } from "@hooks/useProfile";
+import UserRecommendedSources from "@components/UserRecommendedSources/UserRecommendedSources";
+import UserRecommendedFeeds from "@components/UserRecommendedFeeds/UserRecommendedFeeds";
+import UserCommentedContent from "@components/UserCommentedContent/UserCommentedContent";
+import Loading from "@components/Loading/Loading";
+import UserFollowsList from "@components/UserFollowsList/UserFollowsList";
 
 import "./Profile.css";
 

@@ -1,4 +1,4 @@
-import supabase from "../utility/SupabaseClient";
+import supabase from "@utility/SupabaseClient";
 
 // Toggle follow for a feed based on username
 export const toggleFollowFeed = async (user_id, username) => {

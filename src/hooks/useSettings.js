@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateSettings, uploadPicture } from '../services/settingsServices';
+import { updateSettings, uploadPicture } from '@services/settingsServices';
 
 // Hook for updating user settings
 export function useUpdateSettings() {

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import UserCard from "../UserCard/UserCard";
-import Loading from "../Loading/Loading";
-import { useUserData } from '../../contexts/UserDataContext';
+import { useAuth } from "@contexts/AuthContext";
+import UserCard from "@components/UserCard/UserCard";
+import Loading from "@components/Loading/Loading";
+import { useUserData } from "@contexts/UserDataContext";
 import { 
   useRecommendedFeeds, 
   useUserSearch, 
   useRecommendationMutations 
-} from '../../hooks/useRecommendedFeeds';
+} from "@hooks/useRecommendedFeeds";
 import "./UserRecommendedFeeds.css";
 
 const UserRecommendedFeeds = ({ profileUserId }) => {

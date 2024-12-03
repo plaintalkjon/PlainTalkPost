@@ -1,14 +1,14 @@
 // src/pages/Home.jsx
 import React, { useState } from "react";
 import "./Home.css";
-import ContentFilters from "../../components/ContentFilters/ContentFilters.jsx";
-import ContentDisplayColumn from "../../components/ContentDisplayColumn/ContentDisplayColumn.jsx";
-import YourFollowedFeeds from "../../components/UserFollowedFeeds/UserFollowedFeeds.jsx";
-import RecommendedFeeds from "../../components/SystemRecommendedFeeds/SystemRecommendedFeeds.jsx";
-import { useAuth } from "../../contexts/AuthContext.jsx";
-import { useUserData } from "../../hooks/useUserData";
-import Loading from "../../components/Loading/Loading";
-import { useContentFilters } from "../../hooks/useContentFilters";
+import ContentFilters from "@components/ContentFilters/ContentFilters";
+import ContentDisplayColumn from "@components/ContentDisplayColumn/ContentDisplayColumn";
+import YourFollowedFeeds from "@components/UserFollowedFeeds/UserFollowedFeeds";
+import RecommendedFeeds from "@components/SystemRecommendedFeeds/SystemRecommendedFeeds";
+import { useAuth } from "@contexts/AuthContext";
+import { useUserData } from "@hooks/useUserData";
+import Loading from "@components/Loading/Loading";
+import { useContentFilters } from "@hooks/useContentFilters";
 
 const Home = () => {
   const { user } = useAuth();

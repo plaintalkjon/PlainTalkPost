@@ -1,4 +1,4 @@
-import supabase from "../utility/SupabaseClient.js";
+import supabase from "@utility/SupabaseClient";
 
 // Helper function to update upvotes count in content table
 const updateUpvotesCount = async (content_id, increment) => {

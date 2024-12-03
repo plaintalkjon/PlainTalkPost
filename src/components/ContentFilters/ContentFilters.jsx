@@ -1,6 +1,6 @@
 // src/components/ContentFilters/ContentFilters.jsx
 import React from 'react';
-import { useContentFilters } from '../../hooks/useContentFilters';
+import { useContentFilters } from "@hooks/useContentFilters";
 import './ContentFilters.css';
 
 const ContentFilters = () => {

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import supabase from "../utility/SupabaseClient";
+import supabase from "@utility/SupabaseClient";
 import {
   S3Client,
   PutObjectCommand,

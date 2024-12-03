@@ -1,9 +1,9 @@
 import React from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import UserCard from "../UserCard/UserCard";
-import Loading from "../Loading/Loading";
-import supabase from '../../utility/SupabaseClient';
+import UserCard from "@components/UserCard/UserCard";
+import Loading from "@components/Loading/Loading";
+import supabase from "@utility/SupabaseClient";
 import './UserFollowsList.css';
 import { DataRedundancy } from '@aws-sdk/client-s3';
 

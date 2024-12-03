@@ -2,9 +2,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "../../contexts/AuthContext";
-import { useUserData } from "../../hooks/useUserData";
-import { useFollow } from "../../hooks/useFollow";
+import { useAuth } from "@contexts/AuthContext";
+import { useUserData } from "@hooks/useUserData";
+import { useFollow } from "@hooks/useFollow";
 import "./UserCard.css";
 
 const UserCard = ({

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useInView } from 'react-intersection-observer';
-import ContentCard from "../ContentCard/ContentCard";
-import { useUserData } from '../../contexts/UserDataContext';
-import { useContent, useNewContentCheck } from '../../hooks/useContent';
+import ContentCard from "@components/ContentCard/ContentCard";
+import { useUserData } from "@contexts/UserDataContext";
+import { useContent, useNewContentCheck } from "@hooks/useContent";
 import "./ContentDisplayColumn.css";
-import Loading from '../Loading/Loading';
+import Loading from "@components/Loading/Loading";
 
 const ContentDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) => {
   const [feedFilter, setFeedFilter] = useState(userId ? initialFilter : "");

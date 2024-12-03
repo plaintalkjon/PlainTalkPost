@@ -1,6 +1,6 @@
 import React from 'react';
-import { useComments, formatTimestamp } from '../../hooks/useComments';
-import Loading from '../Loading/Loading';
+import { useComments, formatTimestamp } from '@hooks/useComments';
+import Loading from '@components/Loading/Loading';
 import './Comments.css';
 
 const Comments = ({ contentId }) => {

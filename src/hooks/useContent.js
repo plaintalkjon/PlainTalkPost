@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { fetchContent } from '../services/contentServices';
+import { fetchContent } from "@services/contentServices";
 
 export function useContent({ filters, feedFilter, userData }) {
   return useInfiniteQuery({

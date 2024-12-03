@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import supabase from '../utility/SupabaseClient';
+import supabase from '@utility/SupabaseClient';
 
 // Get recommendations
 export function useRecommendedFeeds(profileUserId) {

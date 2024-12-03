@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLogin, useSignup } from '../../hooks/useAuth';
-import { useAuth } from '../../contexts/AuthContext';
-import './Login.css';
+import { useLogin, useSignup } from "@hooks/useAuth";
+import { useAuth } from "@contexts/AuthContext";
+import "./Login.css";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);

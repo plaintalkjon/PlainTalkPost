@@ -4,7 +4,7 @@ import {
   fetchSourcesByUserId,
   fetchUpvotesByUserId,
   fetchFeedsByUserId,
-} from "../services/userServices";
+} from "@services/userServices";
 
 const UserDataContext = createContext();
 

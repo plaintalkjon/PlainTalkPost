@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleFollowFeed } from '../services/followServices';
+import { toggleFollowFeed } from '@services/followServices';
 
 export function useFollow() {
   const queryClient = useQueryClient();

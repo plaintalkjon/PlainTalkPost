@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleFollowSource } from '../services/followServices';
-import { upvoteContent } from '../services/contentServices';
-import { addComment } from '../services/commentServices';
+import { toggleFollowSource } from "@services/followServices";
+import { upvoteContent } from "@services/contentServices";
+import { addComment } from "@services/commentServices";
 
 // Export as a single object
 export const useContentOperations = (contentId) => {

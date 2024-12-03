@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { fetchSourcesByUserId, fetchUpvotesByUserId, fetchFeedsByUserId } from '../services/userServices'
+import { fetchSourcesByUserId, fetchUpvotesByUserId, fetchFeedsByUserId } from '@services/userServices'
 
 export function useUserData(userId) {
   return useQuery({
