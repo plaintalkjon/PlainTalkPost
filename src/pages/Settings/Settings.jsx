@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { useAuth } from "@contexts/AuthContext";
-import { useUpdateSettings, useProfilePictureUpload, validateSettings } from "@hooks/useSettings";
+import {
+  useUpdateSettings,
+  useProfilePictureUpload,
+  validateSettings,
+} from "@hooks/useSettings";
 import "./Settings.css";
 
 const Settings = () => {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const updateSettingsMutation = useUpdateSettings();
   const profilePictureMutation = useProfilePictureUpload();
 
@@ -17,11 +21,15 @@ const Settings = () => {
 
   const [message, setMessage] = useState("");
 
+  const [useDefaultImage, setUseDefaultImage] = useState(false);
+
+  const profilePicture = userProfile?.profile_picture;
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [id.replace('settings-', '')]: value
+      [id.replace("settings-", "")]: value,
     }));
   };
 
@@ -31,7 +39,7 @@ const Settings = () => {
 
     try {
       validateSettings.file(file);
-      
+
       await profilePictureMutation.mutateAsync(
         { userId: user.id, file },
         {
@@ -58,15 +66,15 @@ const Settings = () => {
             username: formData.username,
             email: formData.email,
             password: formData.password,
-          }
+          },
         },
         {
           onSuccess: () => {
             setMessage("Settings updated successfully!");
-            setFormData(prev => ({ 
-              ...prev, 
-              password: "", 
-              repeatPassword: "" 
+            setFormData((prev) => ({
+              ...prev,
+              password: "",
+              repeatPassword: "",
             }));
           },
         }
@@ -76,7 +84,8 @@ const Settings = () => {
     }
   };
 
-  const isLoading = updateSettingsMutation.isPending || profilePictureMutation.isPending;
+  const isLoading =
+    updateSettingsMutation.isPending || profilePictureMutation.isPending;
 
   return (
     <div className="settings-page">
@@ -88,14 +97,13 @@ const Settings = () => {
         <label htmlFor="profilePictureInput" className="profile-pic-label">
           <img
             className="profile-pic"
-            src={user?.profile_picture
-              ? `https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${user.profile_picture}`
-              : "/img/default-profile.png"
+            src={
+              profilePicture
+                ? `https://plaintalkpostuploads.nyc3.digitaloceanspaces.com/uploads/profile_pictures/${profilePicture}`
+                : "/img/no-profile-pic-icon.svg"
             }
             alt="Profile"
-            onError={(e) => {
-              e.target.src = "/img/default-profile.png";
-            }}
+            onError={() => setUseDefaultImage(true)}
           />
           <div className="profile-pic-overlay">
             <span>Change Picture</span>
@@ -150,20 +158,18 @@ const Settings = () => {
             disabled={isLoading}
           />
 
-          <button 
-            type="submit" 
-            className="save-button"
-            disabled={isLoading}
-          >
+          <button type="submit" className="save-button" disabled={isLoading}>
             {isLoading ? "Saving..." : "Save Settings"}
           </button>
         </form>
       </div>
 
       {message && (
-        <div className={`settings-message ${
-          message.includes("Error") ? "error" : "success"
-        }`}>
+        <div
+          className={`settings-message ${
+            message.includes("Error") ? "error" : "success"
+          }`}
+        >
           {message}
         </div>
       )}
