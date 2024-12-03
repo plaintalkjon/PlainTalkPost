@@ -7,7 +7,6 @@ import Home from "@pages/Home/Home";
 import Settings from "@pages/Settings/Settings";
 import Profile from "@pages/Profile/Profile";
 import Login from "@pages/Login/Login";
-import { UserDataProvider } from "@contexts/UserDataContext";
 import { AuthProvider, useAuth } from "@contexts/AuthContext";
 import ErrorBoundary from "@components/ErrorBoundary";
 import NotFound from "@pages/NotFound/NotFound";
@@ -26,9 +25,7 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <UserDataProvider>
-            <AppContent />
-          </UserDataProvider>
+          <AppContent />
         </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>

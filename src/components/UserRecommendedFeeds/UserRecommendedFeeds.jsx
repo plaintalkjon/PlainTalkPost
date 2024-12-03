@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useAuth } from "@contexts/AuthContext";
 import UserCard from "@components/UserCard/UserCard";
 import Loading from "@components/Loading/Loading";
-import { useUserData } from "@contexts/UserDataContext";
 import { 
   useRecommendedFeeds, 
   useUserSearch, 
@@ -12,7 +11,6 @@ import "./UserRecommendedFeeds.css";
 
 const UserRecommendedFeeds = ({ profileUserId }) => {
   const { user } = useAuth();
-  const { userData } = useUserData();
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   

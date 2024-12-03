@@ -1,14 +1,12 @@
 import React from "react";
 import { useAuth } from "@contexts/AuthContext";
-import { useUserData } from "@hooks/useUserData";
 import { useFollowedFeeds } from "@hooks/useFollowedFeeds";
 import UserCard from "@components/UserCard/UserCard";
 import Loading from "@components/Loading/Loading";
 import "./UserFollowedFeeds.css";
 
 const UserFollowedFeeds = () => {
-  const { user } = useAuth();
-  const { data: userData, isLoading: userDataLoading } = useUserData(user?.id);
+  const { user, userData } = useAuth();
   
   const { 
     data: followedFeeds,
@@ -18,7 +16,7 @@ const UserFollowedFeeds = () => {
     enabled: !!userData?.following
   });
 
-  if (userDataLoading || feedsLoading) return <Loading />;
+  if (feedsLoading) return <Loading />;
   
   if (isError) return <p>Error loading followed feeds</p>;
   

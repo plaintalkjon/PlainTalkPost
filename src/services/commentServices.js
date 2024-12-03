@@ -1,4 +1,4 @@
-import supabase from "@utility/SupabaseClient";
+import supabase from '@utility/SupabaseClient';
 
 // Fetch comments for a specific content
 export const fetchCommentsByContentId = async (contentId) => {

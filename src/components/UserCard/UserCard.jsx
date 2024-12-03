@@ -3,7 +3,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@contexts/AuthContext";
-import { useUserData } from "@hooks/useUserData";
 import { useFollow } from "@hooks/useFollow";
 import "./UserCard.css";
 
@@ -14,14 +13,13 @@ const UserCard = ({
   cardType = "default",
 }) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { data: userData } = useUserData(user?.id);
+  const { user, userData } = useAuth();
   const followMutation = useFollow();
   const queryClient = useQueryClient();
 
   const isFollowing =
-    userData?.following?.includes(username) ||
-    (followMutation.variables?.username === username &&
+    userData?.following?.includes(userId) ||
+    (followMutation.variables?.userId === userId &&
       followMutation.isPending);
 
   const handleFollowToggle = async (e) => {
@@ -31,7 +29,7 @@ const UserCard = ({
     followMutation.mutate(
       {
         userId: user.id,
-        username,
+        targetUserId: userId,
       },
       {
         onError: (error) => {

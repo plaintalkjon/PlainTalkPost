@@ -7,7 +7,7 @@ export function useUserProfile(userId) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('user_profile')
-        .select('username')
+        .select('username, profile_picture')
         .eq('user_id', userId)
         .single();
         

@@ -1,18 +1,16 @@
 import React, { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useUserData } from "../../hooks/useUserData";
-import { useContentOperations } from "../../hooks/useContentOperations";
+import { useAuth } from "@contexts/AuthContext";
+import { useContentOperations } from "@hooks/useContentOperations";
 import { 
   useSourceRecommendations, 
   useSourceSearch, 
   useRecommendationMutations 
-} from "../../hooks/useSourceRecommendations";
-import Loading from '../Loading/Loading';
+} from "@hooks/useSourceRecommendations";
+import Loading from '@components/Loading/Loading';
 import "./UserRecommendedSources.css";
 
 const UserRecommendedSources = ({ profileUserId }) => {
-  const { user } = useAuth();
-  const { data: userData } = useUserData(user?.id);
+  const { user, userData } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   

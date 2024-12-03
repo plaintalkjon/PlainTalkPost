@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import supabase from '@utility/SupabaseClient';
+import supabase from '../utility/SupabaseClient';
 
 export function useCommentedContent(profileUserId) {
   return useQuery({

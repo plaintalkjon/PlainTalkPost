@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { useAuth } from "@contexts/AuthContext";
-import { useUserData } from "@hooks/useUserData";
 import { useContentOperations } from "@hooks/useContentOperations";
 import Comments from "@components/Comments/Comments";
 import "./ContentCard.css";
 
-const ContentCard = ({ content, userId }) => {
-  const { userProfile } = useAuth();
-  const { data: userData } = useUserData(userId);
+const ContentCard = ({ content }) => {
+  const { user, userProfile, userData } = useAuth();
   const { followSource, upvoteContent, addComment } = useContentOperations(
     content.content_id
   );
@@ -20,13 +18,13 @@ const ContentCard = ({ content, userId }) => {
   const isUpvoted = userData?.upvotes?.includes(content.content_id) || false;
 
   const handleFollowClick = () => {
-    if (!userId) return;
-    followSource.mutate({ userId, sourceId: content.source_id });
+    if (!user) return;
+    followSource.mutate({ userId: user.id, sourceId: content.source_id });
   };
 
   const handleUpvoteClick = () => {
-    if (!userId) return;
-    upvoteContent.mutate({ userId, contentId: content.content_id });
+    if (!user) return;
+    upvoteContent.mutate({ userId: user.id, contentId: content.content_id });
   };
 
   const handleSubmitComment = () => {
@@ -34,7 +32,7 @@ const ContentCard = ({ content, userId }) => {
 
     addComment.mutate(
       {
-        userId,
+        userId: user.id,
         contentId: content.content_id,
         text: newComment.trim(),
         userProfile,
@@ -101,7 +99,7 @@ const ContentCard = ({ content, userId }) => {
 
       <div className="tidbits-container">
         {/* Upvote button */}
-        {userId && (
+        {user && (
           <div className="tidbits">
             <button
               className="tidbits-button-upvote"
@@ -117,7 +115,7 @@ const ContentCard = ({ content, userId }) => {
         )}
 
         {/* Comment button */}
-        {userId && (
+        {user && (
           <div className="tidbits">
             <img
               className="tidbits-comment-img"
@@ -130,7 +128,7 @@ const ContentCard = ({ content, userId }) => {
 
         {/* Source name and follow button */}
         <div className="tidbits">
-          {userId && (
+          {user && (
             <img
               className={`tidbits-follow-img ${isFollowing ? "clicked" : ""}`}
               src={`/img/${

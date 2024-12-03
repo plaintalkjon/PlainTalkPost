@@ -1,4 +1,4 @@
-import supabase from "@utility/SupabaseClient";
+import supabase from '@utility/SupabaseClient.js';
 
 export const fetchSourceIdBySourceName = async (sourceName) => {
   const { data, error: getSourceError  } = await supabase

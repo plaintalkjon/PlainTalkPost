@@ -2,14 +2,12 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
-import { useUserProfile } from "@hooks/useUserProfile";
 import { logout } from "@services/authServices";
 import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useAuth();
-  const { data: profile, isLoading, isError } = useUserProfile(user?.id);
+  const { user, userProfile, setUser } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -41,12 +39,12 @@ const Navbar = () => {
               Home
             </button>
           </li>
-          {user && !isLoading && !isError && profile?.username && (
+          {user && userProfile?.username && (
             <>
               <li>
                 <button
                   className="nav-button"
-                  onClick={() => handleNavClick(`/profile/${profile.username}`)}
+                  onClick={() => handleNavClick(`/profile/${userProfile.username}`)}
                 >
                   Profile
                 </button>

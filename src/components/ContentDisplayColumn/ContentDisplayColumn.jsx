@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { useInView } from 'react-intersection-observer';
 import ContentCard from "@components/ContentCard/ContentCard";
-import { useUserData } from "@contexts/UserDataContext";
+import { useAuth } from "@contexts/AuthContext";
 import { useContent, useNewContentCheck } from "@hooks/useContent";
 import "./ContentDisplayColumn.css";
 import Loading from "@components/Loading/Loading";
 
-const ContentDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) => {
-  const [feedFilter, setFeedFilter] = useState(userId ? initialFilter : "");
+const ContentDisplayColumn = ({ filters, initialFilter = "yourFeed" }) => {
+  const { user, userData } = useAuth();
+  const [feedFilter, setFeedFilter] = useState(user ? initialFilter : "");
   const [newestTimestamp, setNewestTimestamp] = useState(null);
-  
-  const { userData } = useUserData();
   
   const { 
     data,
@@ -68,7 +67,7 @@ const ContentDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) =
       )}
       
       <div id="home-column-center-filters">
-        {userId && (
+        {user && (
           <button
             className={`center-column-filter ${
               feedFilter === "yourFeed" ? "activePrimaryFilter" : ""
@@ -99,7 +98,7 @@ const ContentDisplayColumn = ({ filters, initialFilter = "yourFeed", userId }) =
         <ContentCard
           key={content.content_id}
           content={content}
-          userId={userId}
+          userId={user?.id}
         />
       ))}
       

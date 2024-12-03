@@ -1,14 +1,12 @@
 import React from "react";
 import { useAuth } from "@contexts/AuthContext";
-import { useUserData } from "@contexts/UserDataContext";
 import { useSystemRecommendations } from "@hooks/useSystemRecommendations";
 import UserCard from "@components/UserCard/UserCard";
 import Loading from "@components/Loading/Loading";
 import "./SystemRecommendedFeeds.css";
 
 const RecommendedFeeds = () => {
-  const { user } = useAuth();
-  const { userData } = useUserData();
+  const { user, userData } = useAuth();
   
   const { 
     data: recommendedFeeds = [], 

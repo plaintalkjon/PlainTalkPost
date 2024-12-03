@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchCommentsByContentId } from "@services/commentServices";
+import { fetchCommentsByContentId } from '@services/commentServices';
 
 export function useComments(contentId) {
   return useQuery({
