@@ -109,7 +109,7 @@ button {
     width: 14px;
 }
 
-#media-filter-content::before {
+#media-filter-article::before {
     content: url("/img/media-filter-content-img.svg");
     display: inline-block;
     vertical-align: middle;

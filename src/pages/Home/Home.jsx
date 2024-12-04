@@ -28,10 +28,7 @@ const Home = () => {
         />
       </div>
       <div className="column home-column-right">
-        {hasFollowedFeeds && (
-          <YourFollowedFeeds />
-        )}
-        <RecommendedFeeds />
+        {user && <RecommendedFeeds />}
       </div>
     </div>
   );

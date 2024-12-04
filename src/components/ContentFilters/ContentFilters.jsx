@@ -40,9 +40,9 @@ const ContentFilters = () => {
           All Media
         </button>
         <button
-          onClick={() => updateFilter('mediaType', 'Content')}
-          id="media-filter-content"
-          className={`media-link ${filters.mediaType === 'Content' ? 'active' : ''}`}
+          onClick={() => updateFilter('mediaType', 'Article')}
+          id="media-filter-article"
+          className={`media-link ${filters.mediaType === 'Article' ? 'active' : ''}`}
         >
           Content
         </button>

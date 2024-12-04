@@ -20,8 +20,6 @@ const UserFollowedFeeds = () => {
   
   if (isError) return <p>Error loading followed feeds</p>;
   
-  if (!followedFeeds?.length) return null;
-
   return (
     <div className="user-followed-feeds-container">
       <h5 className="user-followed-feeds-heading">Followed Feeds</h5>
