@@ -29,7 +29,7 @@ const UserCard = ({
     followMutation.mutate(
       {
         userId: user.id,
-        targetUserId: userId,
+        username: username,
       },
       {
         onError: (error) => {

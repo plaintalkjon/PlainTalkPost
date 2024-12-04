@@ -28,7 +28,6 @@ const UserFollowsList = ({ profileUserId }) => {
           )
         `)
         .eq('user_id', profileUserId)
-        .eq('user_profile.user_id', 'feed_id')
         .range(pageParam, pageParam + 19)
         .order('created_at', { ascending: false });
 

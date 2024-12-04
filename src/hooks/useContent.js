@@ -4,18 +4,22 @@ import { fetchContent } from "@services/contentServices";
 export function useContent({ filters, feedFilter, userData }) {
   return useInfiniteQuery({
     queryKey: ['content', filters, feedFilter, userData?.sources],
-    queryFn: async ({ pageParam = [] }) => {
+    queryFn: async ({ pageParam = { ids: [], datetime: null } }) => {
       const options = {
         ...filters,
         sources: feedFilter === "yourFeed" ? userData?.sources : [],
-        loadedContentIds: pageParam,
+        loadedContentIds: pageParam.ids,
+        datetime: pageParam.datetime || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
       };
 
       try {
         const results = await fetchContent(options);
         return {
           items: results,
-          nextCursor: results.map(content => content.content_id),
+          nextCursor: {
+            ids: results.map(content => content.content_id),
+            datetime: options.datetime,
+          },
         };
       } catch (error) {
         console.error('Error fetching content:', error);
@@ -26,12 +30,13 @@ export function useContent({ filters, feedFilter, userData }) {
       if (!lastPage?.items?.length) return undefined;
       return lastPage.nextCursor;
     },
-    initialPageParam: [],
+    initialPageParam: { ids: [], datetime: null },
     staleTime: 1000 * 60, // Consider data fresh for 1 minute
     cacheTime: 1000 * 60 * 5, // Keep in cache for 5 minutes
     refetchOnWindowFocus: false, // Don't refetch when window regains focus
     retry: 2, // Retry failed requests twice
   });
+  
 }
 
 export function useNewContentCheck({ filters, feedFilter, userData, newestTimestamp }) {

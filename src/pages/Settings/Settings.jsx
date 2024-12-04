@@ -27,9 +27,10 @@ const Settings = () => {
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
+    const key = id.replace("settings-", "").replace(/-/g, "");
     setFormData((prev) => ({
       ...prev,
-      [id.replace("settings-", "")]: value,
+      [key]: value,
     }));
   };
 
@@ -149,10 +150,10 @@ const Settings = () => {
             disabled={isLoading}
           />
 
-          <label htmlFor="settings-repeat-password">Repeat New Password</label>
+          <label htmlFor="settings-repeatPassword">Repeat New Password</label>
           <input
             type="password"
-            id="settings-repeat-password"
+            id="settings-repeatPassword"
             value={formData.repeatPassword}
             onChange={handleInputChange}
             disabled={isLoading}

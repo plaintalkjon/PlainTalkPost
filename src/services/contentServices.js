@@ -83,13 +83,12 @@ export const upvoteContent = async (userId, content_id) => {
   };
 };
 
-
 export const fetchContent = async (filters) => {
   let query = supabase.from("content").select(`
     title,
     link,
-    description,
     datetime,
+    description,
     content_id,
     category,
     upvotes,
@@ -102,7 +101,7 @@ export const fetchContent = async (filters) => {
       publication_type
     )
   `);
-    console.log("fetching content");
+
   // Apply filters
   if (filters.category) {
     query = query.eq("category", filters.category);
@@ -129,26 +128,27 @@ export const fetchContent = async (filters) => {
   if (filters.specificContentIds && filters.specificContentIds.length > 0) {
     query = query.in("content_id", filters.specificContentIds);
   }
-
-
+  
   if (filters.datetime) {
     query = query.gte("datetime", filters.datetime);
   } else {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     query = query.gte("datetime", oneDayAgo);
   }
-  
+
   // Sorting
   const sortColumn = filters.sort === "latest" ? "datetime" : "upvotes";
   query = query.order(sortColumn, { ascending: false });
 
-  // Sets limit to 10 content
   if (filters.limit) {
     query = query.limit(filters.limit);
   } else {
     query = query.limit(20);
   }
 
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000 *2 ).toISOString();
+  query = query.gte("datetime", oneDayAgo);
+  
   const { data, error } = await query;
 
   if (error) {
