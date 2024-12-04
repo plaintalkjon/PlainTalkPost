@@ -3,7 +3,6 @@ import React from "react";
 import "./Home.css";
 import ContentFilters from "@components/ContentFilters/ContentFilters";
 import ContentDisplayColumn from "@components/ContentDisplayColumn/ContentDisplayColumn";
-import YourFollowedFeeds from "@components/UserFollowedFeeds/UserFollowedFeeds";
 import RecommendedFeeds from "@components/SystemRecommendedFeeds/SystemRecommendedFeeds";
 import { useAuth } from "@contexts/AuthContext";
 import { useContentFilters } from "@hooks/useContentFilters";
@@ -11,8 +10,6 @@ import { useContentFilters } from "@hooks/useContentFilters";
 const Home = () => {
   const { user, userData } = useAuth();
   const { filters } = useContentFilters();
-
-  const hasFollowedFeeds = userData?.following?.length > 0;
 
   return (
     <div id="home-columns-container">
