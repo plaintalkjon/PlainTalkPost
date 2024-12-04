@@ -103,11 +103,7 @@
   color: var(--hover-color);
 }
 
-.comments-section {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--tidbits-color);
-}
+
 
 .write-comment-button {
   margin-top: 1rem;

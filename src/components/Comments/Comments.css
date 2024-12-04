@@ -2,7 +2,7 @@
     margin-top: 20px;
     padding: 20px;
     background: var(--background-color);
-    border-radius: 8px;
+    border-bottom: 1px solid var(--tidbits-color);
   }
   
   .comment-form {
