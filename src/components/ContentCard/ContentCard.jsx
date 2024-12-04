@@ -48,6 +48,11 @@ const ContentCard = ({ content }) => {
 
   if (!content) return null;
 
+  const datetime = new Date(content.datetime);
+  const now = new Date();
+  const timeDifference = now - datetime;
+  const minutesAgo = Math.floor(timeDifference / 60000);  
+
   return (
     <div className={`content-card ${content.source?.political_bias}`}>
       {/* Article: Opens in new tab */}
@@ -146,6 +151,11 @@ const ContentCard = ({ content }) => {
           >
             {content.source?.name}
           </a>
+        </div>
+
+        {/* Time of article in terms of minutes ago if under an hour, otherwise in terms of hours ago */}
+        <div className="tidbits">
+          <p>{minutesAgo < 60 ? `${minutesAgo} min` : `${Math.floor(minutesAgo / 60)} hrs`}</p>
         </div>
       </div>
 

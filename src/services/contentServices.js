@@ -29,7 +29,6 @@ const updateUpvotesCount = async (content_id, increment) => {
 // Function to toggle upvote on content
 export const upvoteContent = async (userId, content_id) => {
   if (!userId) throw new Error("Unauthorized: No user logged in");
-
   // Check if the user has already upvoted this content
   const { data: existingVote, error: existingVoteError } = await supabase
     .from("user_content_upvote")

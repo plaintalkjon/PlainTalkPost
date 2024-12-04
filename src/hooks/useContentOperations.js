@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleFollowSource } from "@services/followServices";
-import { upvoteContent } from "@services/contentServices";
+import { upvoteContent as upvoteContentService } from "@services/contentServices";
 import { addComment } from "@services/commentServices";
 
 // Export as a single object
@@ -30,12 +30,15 @@ export const useContentOperations = (contentId) => {
     }
   });
 
-  const upvoteContent = useMutation({
-    mutationFn: ({ userId, contentId }) => upvoteContent(userId, contentId),
+  const upvoteContentMutation = useMutation({
+    mutationFn: ({ userId, contentId }) => upvoteContentService(userId, contentId),
     onMutate: async ({ contentId }) => {
       await queryClient.cancelQueries(['userData']);
-      const previousData = queryClient.getQueryData(['userData']);
+      await queryClient.cancelQueries(['content', contentId]);
       
+      const previousUserData = queryClient.getQueryData(['userData']);
+      const previousContent = queryClient.getQueryData(['content', contentId]);
+
       queryClient.setQueryData(['userData'], old => ({
         ...old,
         upvotes: old?.upvotes?.includes(contentId)
@@ -43,13 +46,20 @@ export const useContentOperations = (contentId) => {
           : [...(old?.upvotes || []), contentId]
       }));
 
-      return { previousData };
+      queryClient.setQueryData(['content', contentId], old => ({
+        ...old,
+        upvotes: old?.upvotes + (previousUserData?.upvotes?.includes(contentId) ? -1 : 1)
+      }));
+
+      return { previousUserData, previousContent };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['userData'], context.previousData);
+      queryClient.setQueryData(['userData'], context.previousUserData);
+      queryClient.setQueryData(['content', contentId], context.previousContent);
     },
     onSettled: () => {
       queryClient.invalidateQueries(['userData']);
+      queryClient.invalidateQueries(['content', contentId]);
     }
   });
 
@@ -63,7 +73,7 @@ export const useContentOperations = (contentId) => {
 
   return {
     followSource,
-    upvoteContent,
+    upvoteContent: upvoteContentMutation,
     addComment: addCommentMutation
   };
 }
