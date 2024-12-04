@@ -6,7 +6,7 @@ import ContentDisplayColumn from "@components/ContentDisplayColumn/ContentDispla
 import RecommendedFeeds from "@components/SystemRecommendedFeeds/SystemRecommendedFeeds";
 import { useAuth } from "@contexts/AuthContext";
 import { useContentFilters } from "@hooks/useContentFilters";
-
+import WhatYouAreMissing from "@components/WhatYouAreMissing/WhatYouAreMissing";
 const Home = () => {
   const { user, userData } = useAuth();
   const { filters } = useContentFilters();
@@ -25,7 +25,7 @@ const Home = () => {
         />
       </div>
       <div className="column home-column-right">
-        {user && <RecommendedFeeds />}
+        {user ? <RecommendedFeeds /> : <WhatYouAreMissing />}
       </div>
     </div>
   );

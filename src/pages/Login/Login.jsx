@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLogin, useSignup } from "@hooks/useAuth";
 import { useAuth } from "@contexts/AuthContext";
 import "./Login.css";
 
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [searchParams] = useSearchParams();
+  const [isLogin, setIsLogin] = useState(searchParams.get('mode') !== 'signup');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -24,6 +25,11 @@ const Login = () => {
       navigate('/');
     }
   }, [user, navigate]);
+
+  // Update isLogin when mode changes
+  useEffect(() => {
+    setIsLogin(searchParams.get('mode') !== 'signup');
+  }, [searchParams]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
