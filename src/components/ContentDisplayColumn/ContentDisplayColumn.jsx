@@ -68,20 +68,31 @@ const ContentDisplayColumn = ({ filters, initialFilter = "yourFeed" }) => {
       
       <div id="home-column-center-filters">
         {user && (
-          <button
-            className={`center-column-filter ${
-              feedFilter === "yourFeed" ? "activePrimaryFilter" : ""
-            }`}
-            onClick={() => handleFilterChange("yourFeed")}
-            type="button"
-          >
-            <img 
-              src="/img/following-source-img.svg" 
-              alt="" 
-              style={{ width: '20px', marginRight: '4px' }}
-            />
-            Your Feed
-          </button>
+          <>
+            <button
+              className={`center-column-filter ${
+                feedFilter === "yourFeed" ? "activePrimaryFilter" : ""
+              }`}
+              onClick={() => handleFilterChange("yourFeed")}
+              type="button"
+            >
+              <img 
+                src="/img/following-source-img.svg" 
+                alt="" 
+                style={{ width: '20px', marginRight: '4px' }}
+              />
+              Your Feed
+            </button>
+            <button
+              className={`center-column-filter ${
+                feedFilter === "yourFollows" ? "activePrimaryFilter" : ""
+              }`}
+              onClick={() => handleFilterChange("yourFollows")}
+              type="button"
+            >
+              Your Follows
+            </button>
+          </>
         )}
         <button
           className={`center-column-filter ${

@@ -101,6 +101,28 @@ export const fetchContent = async (filters) => {
     )
   `);
 
+  let contentIdsWithComments = [];
+  if (filters.followedFeeds && filters.followedFeeds?.length > 0) {
+    const { data: commentedContent, error: commentError } = await supabase
+      .from('user_content_comments')
+      .select('content_id')
+      .in('user_id', filters.followedFeeds)
+      .gt('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      ;
+
+    if (commentError) {
+      console.error('Error fetching commented content:', commentError);
+      throw commentError;
+    }
+
+    contentIdsWithComments = commentedContent.map(item => item.content_id);
+    
+    // If no comments found, return empty array early
+    if (contentIdsWithComments.length === 0) {
+      return [];
+    }
+  }
+
   // Apply filters
   if (filters.category) {
     query = query.eq("category", filters.category);
@@ -124,8 +146,8 @@ export const fetchContent = async (filters) => {
     query = query.not("content_id", "in", `(${filters.loadedContentIds})`);
   }
 
-  if (filters.specificContentIds && filters.specificContentIds.length > 0) {
-    query = query.in("content_id", filters.specificContentIds);
+  if (contentIdsWithComments.length > 0) {
+    query = query.in('content_id', contentIdsWithComments);
   }
   
   if (filters.datetime) {
@@ -145,15 +167,13 @@ export const fetchContent = async (filters) => {
     query = query.limit(20);
   }
 
-  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000 *2 ).toISOString();
-  query = query.gte("datetime", oneDayAgo);
+
   
   const { data, error } = await query;
 
   if (error) {
     console.error("Error fetching content:", error);
-    return [];
+    throw error;  
   }
-
   return data;
 };

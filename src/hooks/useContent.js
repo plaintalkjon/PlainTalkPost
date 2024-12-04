@@ -10,6 +10,7 @@ export function useContent({ filters, feedFilter, userData }) {
         sources: feedFilter === "yourFeed" ? userData?.sources : [],
         loadedContentIds: pageParam.ids,
         datetime: pageParam.datetime || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        followedFeeds: feedFilter === "yourFollows" ? userData?.following : undefined
       };
 
       try {
