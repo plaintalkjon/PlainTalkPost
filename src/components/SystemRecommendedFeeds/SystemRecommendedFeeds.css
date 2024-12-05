@@ -1,12 +1,37 @@
 .system-recommended-feeds {
-  margin: 10px 0;
-  border: solid 1px var(--tidbits-color);
-  border-radius: 5px;
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 80%;
+  max-width: 300px;
+  height: 100%;
+  background-color: var(--background-color);
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 1rem;
+}
 
+.system-recommended-feeds.active {
+  right: 0;
+}
+
+.feeds-toggle-button {
+  position: fixed;
+  top: 8rem; /* Positioned below the filters button */
+  left: 1rem; /* Move the button to the left side */
+  z-index: 1100;
+  background-color: var(--tidbits-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .system-feeds-heading {
-  padding: 5px;
+  margin-bottom: 1rem;
   color: var(--text-color);
 }
 
@@ -14,6 +39,23 @@
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  .system-recommended-feeds {
+    position: static;
+    width: auto;
+    max-width: none;
+    height: auto;
+    box-shadow: none;
+    transition: none;
+    padding: 0;
+  }
+
+  .feeds-toggle-button {
+    display: none;
+  }
 }
 
 /* System recommendation specific card styles */

@@ -2,84 +2,78 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    max-width: 1000px;
-    min-width: 80vw;
-    margin: 0 auto; 
+    max-width: 1500px;
+    margin: 0 auto;
     gap: 10px;
-}
-
-#home-column-left {
-  width: 200px;
-}
-
-
-#home-column-right {
-    width: 300px;
-    max-width: 300px;
-    border-left: 2px solid var(--text-color);
-    padding: 0px 5px 5px 5px;
-    position: relative;
+    padding: 1.5rem;
 }
 
 #home-column-center {
-  width: 80%;
+    width: 100%;
 }
-
 
 #home-column-center-filters {
     display: flex;
-    flex-direction: row; /* Change to column layout */
-    height: 85px; /* Increase the minimum height to fit 3 items */
-    justify-content: space-around; /* Space the items evenly */
+    flex-direction: row;
+    height: 85px;
+    justify-content: space-around;
     gap: 10px;
-    margin: 0px;
-  }
-  
-  .center-column-filter {
+    margin: 0;
+}
+
+.center-column-filter {
     display: flex;
-    flex: 1; /* Each filter takes up equal height */
+    flex: 1;
     border: 2px solid var(--text-color);
     border-radius: 5px;
     justify-content: space-around;
     align-items: center;
-    margin: 10px 0; /* Add space between filters */
-  }
-  
-  .center-column-filter-not-logged-in {
+    margin: 10px 0;
+}
+
+.center-column-filter-not-logged-in {
     display: flex;
-    flex: 1; /* Each filter takes up equal height */
+    flex: 1;
     border: 2px solid var(--text-color);
+    border-radius: 5px;
     justify-content: space-around;
     align-items: center;
-    margin: 10px 0; /* Add space between filters */
-    border-radius: 5px;
-  
-  }
-
-.home-container {
-  max-width: 1500px;
-  margin: 0 auto;
-  padding: 1.5rem;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 300px 1fr 300px; /* Fixed widths for sidebars */
+    margin: 10px 0;
 }
 
-/* Ensure sidebar containers maintain width */
-.home-left-sidebar,
-.home-right-sidebar {
-  width: 300px;
-  box-sizing: border-box;
-}
-
-/* Ensure UserCard stays within container */
 .user-card-link {
-  width: 100%;
-  box-sizing: border-box;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .user-card {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0.5rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem 1rem;
 }
+
+@media (min-width: 768px) {
+    #home-columns-container {
+        display: grid;
+        grid-template-columns: 200px 1fr 300px;
+    }
+
+    #home-column-left {
+        display: block;
+        width: 200px;
+    }
+
+    #home-column-center {
+        width: auto;
+    }
+
+    #home-column-right {
+        display: block;
+        width: 300px;
+        max-width: 300px;
+        border-left: 2px solid var(--text-color);
+        padding: 0px 5px 5px 5px;
+        position: relative;
+    }
+}
+

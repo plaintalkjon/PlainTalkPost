@@ -7,39 +7,125 @@
   max-width: 1500px; /* Optional: keep a max width */
   width: 100%; /* Full width for responsiveness */
   margin: auto; /* Center the navbar within its container */
-  border-bottom: 2px solid var(--text-color);
 }
 
-#navbar-logo {
-  height: 25px;
+
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.hamburger-menu {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+}
+
+.nav-logo {
+  margin-right: auto;
+  display: flex;
+  padding-left: 1rem;
 }
 
 .navbar-links {
   list-style: none;
   display: flex;
   gap: 1rem;
+  margin: 0;
+  padding: 0;
+  margin-left: auto;
 }
 
-.navbar-links a:hover {
-  color: var(--accent-color);
+.nav-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
-.navbar {
-  width: 100%;
-  border-bottom: 1px solid var(--tidbits-color);
-  background-color: var(--background-color);
+.mobile-only-nav {
+  display: none;
 }
 
-.navbar-container {
-  max-width: 1500px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+@media (max-width: 768px) {
+  .hamburger-menu {
+    display: block;
+  }
+
+  .mobile-only-nav {
+    display: block;
+  }
+
+  .navbar-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 150px;
+    height: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    transition: right 0.3s ease;
+    z-index: 1000;
+    background-color: var(--background-color);
+
+  }
+
+  .navbar-links.active {
+    right: 0;
+  }
+
+  .nav-button {
+    margin-bottom: 1rem;
+    width: 100%;
+    text-align: left;
+  }
 }
 
 .nav-logo img {
   height: 25px;
   width: auto; /* This maintains aspect ratio */
   display: block; /* Removes any unwanted space below the image */
+}
+
+.mobile-menu-header {
+  display: none;
+}
+
+
+
+@media (max-width: 768px) {
+  .mobile-menu-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+  }
+
+  .close-menu {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .navbar-links {
+    padding-top: 0; /* Remove top padding since we have the header now */
+  }
 }
