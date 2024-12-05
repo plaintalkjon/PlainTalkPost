@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useLogin, useSignup } from "@hooks/useAuth";
 import { useAuth } from "@contexts/AuthContext";
 import "./Login.css";
@@ -12,6 +12,7 @@ const Login = () => {
     password: '',
     username: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
   
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -37,6 +38,21 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Please enter your email address");
+      return;
+    }
+
+    try {
+      await resetPassword(email);
+      setResetSent(true);
+      setError("");
+    } catch (error) {
+      setError("Failed to send reset email. Please check your email address.");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -90,17 +106,26 @@ const Login = () => {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group password-input-group">
             <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              disabled={isLoading}
-              required
-            />
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                disabled={isLoading}
+                required
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
           </div>
 
           {!isLogin && (
@@ -146,6 +171,10 @@ const Login = () => {
             ? 'Need an account? Sign up' 
             : 'Already have an account? Login'
           }
+        </button>
+
+        <button type="button" className="forgot-password-button">
+          <Link to="/forgot-password">Forgot Password?</Link>
         </button>
       </div>
     </div>

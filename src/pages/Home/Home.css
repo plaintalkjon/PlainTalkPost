@@ -8,6 +8,12 @@
     padding: 1.5rem;
 }
 
+#home-column-left,
+#home-column-right {
+    display: none;
+    width: 0;
+}
+
 #home-column-center {
     width: 100%;
 }
@@ -52,6 +58,10 @@
     padding: 0.5rem 1rem;
 }
 
+.what-you-are-missing {
+    display: none;
+}
+
 @media (min-width: 768px) {
     #home-columns-container {
         display: grid;
@@ -74,6 +84,10 @@
         border-left: 2px solid var(--text-color);
         padding: 0px 5px 5px 5px;
         position: relative;
+    }
+
+    .what-you-are-missing {
+        display: block;
     }
 }
 

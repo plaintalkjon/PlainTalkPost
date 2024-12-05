@@ -1,8 +1,8 @@
 // src/App.jsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Navbar from "@components/Navbar/Navbar";
 import Home from "@pages/Home/Home";
 import Settings from "@pages/Settings/Settings";
@@ -12,6 +12,8 @@ import { AuthProvider, useAuth } from "@contexts/AuthContext";
 import ErrorBoundary from "@components/ErrorBoundary";
 import NotFound from "@pages/NotFound/NotFound";
 import FindSources from "@pages/FindSources/FindSources";
+import ForgotPassword from "@pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "@pages/ResetPassword/ResetPassword";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -50,6 +52,8 @@ function AppContent() {
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/find-sources" element={<FindSources />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
