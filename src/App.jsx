@@ -11,7 +11,7 @@ import Login from "@pages/Login/Login";
 import { AuthProvider, useAuth } from "@contexts/AuthContext";
 import ErrorBoundary from "@components/ErrorBoundary";
 import NotFound from "@pages/NotFound/NotFound";
-
+import FindSources from "@pages/FindSources/FindSources";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -49,6 +49,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/find-sources" element={<FindSources />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

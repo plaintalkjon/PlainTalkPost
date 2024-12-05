@@ -57,6 +57,14 @@ const Navbar = () => {
                   Settings
                 </button>
               </li>
+              <li>
+                <button
+                  className="nav-button"
+                  onClick={() => handleNavClick("/find-sources")}
+                >
+                  Build Your Feed
+                </button>
+              </li>
             </>
           )}
           <li>
