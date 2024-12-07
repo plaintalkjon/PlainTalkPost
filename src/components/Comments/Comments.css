@@ -1,5 +1,5 @@
 .comments-section {
-    margin-top: 20px;
+    margin-top: 5px;
     padding: 20px;
     background: var(--background-color);
     border-bottom: 1px solid var(--tidbits-color);
@@ -30,11 +30,9 @@
   .comments-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
   }
   
   .comment {
-    padding: 2px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
   }

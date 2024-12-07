@@ -62,6 +62,16 @@
     display: none;
 }
 
+/* Mobile styles */
+@media (max-width: 768px) {
+    #home-column-left {
+        display: block;
+        width: auto;
+        position: relative;
+    }
+}
+
+/* Desktop styles */
 @media (min-width: 768px) {
     #home-columns-container {
         display: grid;

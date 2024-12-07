@@ -1,6 +1,9 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useProfile } from "@hooks/useProfile";
+import { useFollow } from "@hooks/useFollow";
+import { useAuth } from "@contexts/AuthContext";
+import FollowFeedButton from "@components/atoms/FollowFeedButton/FollowFeedButton";
 import UserRecommendedSources from "@components/UserRecommendedSources/UserRecommendedSources";
 import UserRecommendedFeeds from "@components/UserRecommendedFeeds/UserRecommendedFeeds";
 import UserCommentedContent from "@components/UserCommentedContent/UserCommentedContent";
@@ -12,8 +15,15 @@ import "./Profile.css";
 const Profile = () => {
   const { username } = useParams();
   const navigate = useNavigate();
+  const { user, userData } = useAuth();
+  const { mutate: followUser } = useFollow();
 
   const { data: profileData, isLoading, isError, error } = useProfile(username);
+
+  const handleFollow = () => {
+    if (!user) return;
+    followUser({ userId: user.id, username });
+  };
 
   if (isLoading) {
     return (
@@ -37,6 +47,8 @@ const Profile = () => {
 
   const { user_id: profileUserId, profile_picture: profilePicture } =
     profileData;
+  const isFollowing = userData?.following?.includes(profileUserId);
+  const isOwnProfile = user?.id === profileUserId;
 
   return (
     <div id="profile-body">
@@ -61,7 +73,17 @@ const Profile = () => {
                 />
               )}
             </div>
-            <h1>{username}</h1>
+            <div className="profile-info">
+              <h1>{username}</h1>
+              {user && !isOwnProfile && (
+                <FollowFeedButton 
+                  isFollowing={isFollowing}
+                  onClick={handleFollow}
+                  disabled={!user}
+                  size="medium"
+                />
+              )}
+            </div>
           </div>
 
           <div className="profile-recommendations">

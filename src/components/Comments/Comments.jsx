@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useComments, formatTimestamp } from '@hooks/useComments';
 import Loading from '@components/Loading/Loading';
 import './Comments.css';
@@ -44,9 +45,12 @@ const Comments = ({ contentId }) => {
                   e.target.src = '/img/default-profile.png';
                 }}
               />
-              <span className="comment-username">
+              <Link 
+                to={`/profile/${comment.user_profile.username}`} 
+                className="comment-username"
+              >
                 {comment.user_profile.username}
-              </span>
+              </Link>
               <span className="comment-date">
                 {formatTimestamp(comment.created_at)}
               </span>

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@contexts/AuthContext";
 import { useFollow } from "@hooks/useFollow";
+import FollowFeedButton from "@components/atoms/FollowFeedButton/FollowFeedButton";
 import "./UserCard.css";
 
 const UserCard = ({
@@ -15,12 +16,8 @@ const UserCard = ({
   const navigate = useNavigate();
   const { user, userData } = useAuth();
   const followMutation = useFollow();
-  const queryClient = useQueryClient();
 
-  const isFollowing =
-    userData?.following?.includes(userId) ||
-    (followMutation.variables?.userId === userId &&
-      followMutation.isPending);
+  const isFollowing = userData?.following?.includes(username);
 
   const handleFollowToggle = async (e) => {
     e.stopPropagation();
@@ -61,19 +58,12 @@ const UserCard = ({
         </p>
       </div>
       {user && user.id !== userId && (
-        <button
-          className={`follow-feed-button ${isFollowing ? "following" : ""} ${
-            followMutation.isPending ? "loading" : ""
-          }`}
+        <FollowFeedButton
+          isFollowing={isFollowing}
           onClick={handleFollowToggle}
           disabled={followMutation.isPending}
-        >
-          {followMutation.isPending
-            ? "..."
-            : isFollowing
-            ? "Following"
-            : "Follow"}
-        </button>
+          size="small"
+        />
       )}
     </div>
   );

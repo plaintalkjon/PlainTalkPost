@@ -5,11 +5,20 @@ import "./ContentFilters.css";
 
 const ContentFilters = () => {
   const { filters, updateFilter } = useContentFilters();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleFilters = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <>
-      <div id="filters-container">
-        <p id="errorMessage" style={{ color: "red" }}></p>
+
+      <div id="filters-container" className={isOpen ? 'active' : ''}>
+        <button className="filters-close-button" onClick={toggleFilters}>
+          ×
+        </button>
+
         <div id="sort-filter" className="filter-section">
           <h5>Sort By</h5>
           <div className="sorting">
