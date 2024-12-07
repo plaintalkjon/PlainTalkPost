@@ -8,27 +8,91 @@ export const useContentOperations = (contentId) => {
   const queryClient = useQueryClient();
   
   const followSource = useMutation({
-    mutationFn: ({ userId, sourceId }) => toggleFollowSource(userId, sourceId),
+    mutationFn: async({ userId, sourceId }) => {
+      await toggleFollowSource(userId, sourceId);
+    },
     onMutate: async ({ sourceId }) => {
-      await queryClient.cancelQueries(['userData']);
+      // Cancel any outgoing refetches
+      await Promise.all([
+        queryClient.cancelQueries(['userData']),
+        queryClient.cancelQueries(['content']),
+        queryClient.cancelQueries(['starterPacks']),
+        queryClient.cancelQueries(['sources']),
+      ]);
       
-      const previousUserData = queryClient.getQueryData(['userData']);
+      // Snapshot the previous values
+      const previousData = {
+        userData: queryClient.getQueryData(['userData']),
+        content: queryClient.getQueryData(['content']),
+        starterPacks: queryClient.getQueryData(['starterPacks']),
+        sources: queryClient.getQueryData(['sources']),
+      };
       
-      queryClient.setQueryData(['userData'], old => ({
-        ...old,
-        sources: old?.sources?.includes(sourceId)
-          ? old.sources.filter(id => id !== sourceId)
-          : [...(old?.sources || []), sourceId]
-      }));
+      // Optimistically update userData
+      queryClient.setQueryData(['userData'], old => {
+        const isFollowing = old?.sources?.includes(sourceId);
+        return {
+          ...old,
+          sources: isFollowing
+            ? old.sources.filter(id => id !== sourceId)
+            : [...(old?.sources || []), sourceId]
+        };
+      });
 
-      return { previousUserData };
+      // Update content items that contain this source
+      queryClient.setQueryData(['content'], old => {
+        if (!old?.pages) return old;
+        return {
+          ...old,
+          pages: old.pages.map(page => ({
+            ...page,
+            items: page.items.map(item => 
+              item.source_id === sourceId 
+                ? { ...item, is_following: !item.is_following }
+                : item
+            )
+          }))
+        };
+      });
+
+      // Update starter packs
+      queryClient.setQueryData(['starterPacks'], old => {
+        if (!old) return old;
+        return old.map(pack => ({
+          ...pack,
+          sources: pack.sources.map(source =>
+            source.source_id === sourceId
+              ? { ...source, is_following: !source.is_following }
+              : source
+          )
+        }));
+      });
+
+      // Update sources list
+      queryClient.setQueryData(['sources'], old => {
+        if (!old) return old;
+        return old.map(source =>
+          source.source_id === sourceId
+            ? { ...source, is_following: !source.is_following }
+            : source
+        );
+      });
+
+      return previousData;
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['userData'], context.previousUserData);
+      // If mutation fails, use the context to roll back
+      queryClient.setQueryData(['userData'], context.userData);
+      queryClient.setQueryData(['content'], context.content);
+      queryClient.setQueryData(['starterPacks'], context.starterPacks);
+      queryClient.setQueryData(['sources'], context.sources);
     },
-    onSuccess: () => {
-      // Instead of invalidating, we'll rely on our optimistic update
-      // queryClient.invalidateQueries(['userData']); // Remove this line
+    onSettled: () => {
+      // Refetch to ensure server state
+      queryClient.invalidateQueries(['userData']);
+      queryClient.invalidateQueries(['content']);
+      queryClient.invalidateQueries(['starterPacks']);
+      queryClient.invalidateQueries(['sources']);
     }
   });
 

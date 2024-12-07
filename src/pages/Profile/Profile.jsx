@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useProfile } from "@hooks/useProfile";
 import { useFollow } from "@hooks/useFollow";
 import { useAuth } from "@contexts/AuthContext";
-import FollowFeedButton from "@components/atoms/FollowFeedButton/FollowFeedButton";
+import FollowFeedButton from "@components/atoms/buttons/FollowFeedButton/FollowFeedButton";
 import UserRecommendedSources from "@components/UserRecommendedSources/UserRecommendedSources";
 import UserRecommendedFeeds from "@components/UserRecommendedFeeds/UserRecommendedFeeds";
 import UserCommentedContent from "@components/UserCommentedContent/UserCommentedContent";

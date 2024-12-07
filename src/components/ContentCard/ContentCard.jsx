@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@contexts/AuthContext";
 import { useContentOperations } from "@hooks/useContentOperations";
 import Comments from "@components/Comments/Comments";
+import FollowSourceButton from "@components/atoms/buttons/FollowSourceButton/FollowSourceButton";
 import "./ContentCard.css";
 
 const ContentCard = React.memo(({ content }) => {
@@ -26,11 +27,26 @@ const ContentCard = React.memo(({ content }) => {
     setLocalIsUpvoted(userData?.upvotes?.includes(content.content_id) || false);
   }, [userData?.sources, content.source_id, userData?.upvotes, content.content_id]);
 
-  const handleFollowClick = useCallback(() => {
-    if (!user) return;
-    setLocalIsFollowing(!localIsFollowing);
-    followSource.mutate({ userId: user.id, sourceId: content.source_id });
-  }, [user, followSource, content.source_id,localIsFollowing]);
+  const handleFollowClick = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user || !content.source_id) return;
+
+    followSource.mutate(
+      {
+        userId: user.id,
+        sourceId: content.source_id,
+      },
+      {
+        onSuccess: () => {
+          setLocalIsFollowing(!localIsFollowing);
+        },
+        onError: (error) => {
+          console.error("Failed to follow source:", error);
+        },
+      }
+    );
+  }, [user, content.source_id, localIsFollowing, followSource]);
 
   const handleUpvoteClick = useCallback(() => {
     if (!user) return;
@@ -146,20 +162,13 @@ const ContentCard = React.memo(({ content }) => {
         {/* Source name and follow button */}
         <div className="tidbits">
           {user && (
-            <button
-              className="tidbits-button-follow"
+            <FollowSourceButton 
+              isFollowing={localIsFollowing}
               onClick={handleFollowClick}
               disabled={followSource.isPending}
-            >
-              <img
-                src={`/img/${
-                  localIsFollowing
-                    ? "following-source-img.svg"
-                    : "follow-source-img.svg"
-                }`}
-                alt={localIsFollowing ? "Unfollow source" : "Followsource"}
-              />
-            </button>
+              size="medium"
+              className="tidbits-button-follow"
+            />
           )}
           <a
             href={`/source/${content.source?.source_id}`}

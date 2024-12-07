@@ -1,0 +1,116 @@
+.filter-content-button {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-size: 14px;
+  text-decoration: none;
+  margin-bottom: 5px;
+  padding-left: 8px;
+  margin-left: 8px;
+  overflow: hidden;
+}
+
+.filter-content-button:hover {
+  opacity: 0.8;
+}
+
+.filter-content-button.active {
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+/* Size variants */
+.filter-content-button.small {
+  font-size: 0.8rem;
+}
+
+.filter-content-button.medium {
+  font-size: 1rem;
+}
+
+.filter-content-button.large {
+  font-size: 1.1rem;
+}
+
+.filter-content-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Icon styles */
+#bias-filter-all::before {
+  content: url("/img/bias-filter-all-img.svg");
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+  width: 12px;
+}
+
+#media-filter-all::before,
+#media-filter-article::before,
+#media-filter-videos::before,
+#publication-filter-all::before,
+#publication-filter-indie::before,
+#publication-filter-mainstream::before,
+#sort-filter-trending::before,
+#sort-filter-latest::before,
+#category-filter-all::before,
+#category-filter-politics::before,
+#category-filter-economy::before,
+#category-filter-international::before,
+#category-filter-tech::before {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+  width: 14px;
+}
+
+#media-filter-all::before {
+  content: url("/img/media-filter-all-img.svg");
+}
+#media-filter-article::before {
+  content: url("/img/media-filter-content-img.svg");
+}
+#media-filter-videos::before {
+  content: url("/img/media-filter-videos-img.svg");
+}
+#publication-filter-all::before {
+  content: url("/img/publication-filter-all-img.svg");
+}
+#publication-filter-indie::before {
+  content: url("/img/publication-filter-indie-img.svg");
+}
+#publication-filter-mainstream::before {
+  content: url("/img/publication-filter-mainstream-img.svg");
+}
+#sort-filter-trending::before {
+  content: url("/img/trending.svg");
+}
+#sort-filter-latest::before {
+  content: url("/img/sort-filter-latest-img.svg");
+}
+#category-filter-all::before {
+  content: url("/img/category-filter-all-img.svg");
+}
+#category-filter-politics::before {
+  content: url("/img/category-filter-politics-img.svg");
+}
+#category-filter-economy::before {
+  content: url("/img/category-filter-economy-img.svg");
+}
+#category-filter-international::before {
+  content: url("/img/category-filter-international-img.svg");
+}
+#category-filter-tech::before {
+  content: url("/img/category-filter-tech-img.svg");
+}
+
+/* Because I'm using borders, not images, I need to add a margin to the left of the button to make inline*/
+.left, .leanleft, .center, .leanright, .right {
+  margin-left: 23px;
+}

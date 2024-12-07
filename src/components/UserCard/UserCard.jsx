@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@contexts/AuthContext";
 import { useFollow } from "@hooks/useFollow";
-import FollowFeedButton from "@components/atoms/FollowFeedButton/FollowFeedButton";
+import FollowFeedButton from "@components/atoms/buttons/FollowFeedButton/FollowFeedButton";
 import "./UserCard.css";
 
 const UserCard = ({

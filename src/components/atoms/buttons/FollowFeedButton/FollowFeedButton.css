@@ -2,7 +2,7 @@
   margin-right: auto; /* Push button to the right */
   background-color: var(--text-color);
   color: #000000;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.2s, box-shadow 0.2s;

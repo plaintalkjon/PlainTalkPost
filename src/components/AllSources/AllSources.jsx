@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@contexts/AuthContext";
 import { useContentOperations } from "@hooks/useContentOperations";
+import FilterContentButton from "@components/atoms/buttons/FilterContentButton/FilterContentButton";
 import Loading from "@components/Loading/Loading";
 import supabase from "@utility/SupabaseClient";
 import "./AllSources.css";
@@ -58,21 +59,23 @@ const AllSources = () => {
         <div className="filter-section">
           <h3>Political Bias</h3>
           <div className="bias-filters">
-            <button
+            <FilterContentButton
               id="bias-filter-all"
               onClick={() => setBiasFilter(null)}
-              className={`bias-filter all ${!biasFilter ? 'active' : ''}`}
+              isActive={!biasFilter}
+              className="all"
             >
               All Bias
-            </button>
+            </FilterContentButton>
             {['left', 'leanleft', 'center', 'leanright', 'right'].map((bias) => (
-              <button
+              <FilterContentButton
                 key={bias}
                 onClick={() => setBiasFilter(biasFilter === bias ? null : bias)}
-                className={`bias-filter ${bias} ${biasFilter === bias ? 'active' : ''}`}
+                isActive={biasFilter === bias}
+                className={bias}
               >
                 {bias.charAt(0).toUpperCase() + bias.slice(1)}
-              </button>
+              </FilterContentButton>
             ))}
           </div>
         </div>
@@ -80,27 +83,30 @@ const AllSources = () => {
         <div className="filter-section">
           <h3>Publication Type</h3>
           <div className="publication-filters">
-            <button
+            <FilterContentButton
               id="publication-filter-all"
               onClick={() => setPublicationType(null)}
-              className={`publication-filter all ${!publicationType ? 'active' : ''}`}
+              isActive={!publicationType}
+              className="all"
             >
               All Types
-            </button>
-            <button
+            </FilterContentButton>
+            <FilterContentButton
               id="publication-filter-mainstream"
               onClick={() => setPublicationType(publicationType === 'Mainstream' ? null : 'Mainstream')}
-              className={`publication-filter mainstream ${publicationType === 'Mainstream' ? 'active' : ''}`}
+              isActive={publicationType === 'Mainstream'}
+              className="mainstream"
             >
               Mainstream
-            </button>
-            <button
+            </FilterContentButton>
+            <FilterContentButton
               id="publication-filter-indie"
               onClick={() => setPublicationType(publicationType === 'Indie' ? null : 'Indie')}
-              className={`publication-filter indie ${publicationType === 'Indie' ? 'active' : ''}`}
+              isActive={publicationType === 'Indie'}
+              className="indie"
             >
               Indie
-            </button>
+            </FilterContentButton>
           </div>
         </div>
       </div>

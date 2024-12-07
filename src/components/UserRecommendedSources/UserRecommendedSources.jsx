@@ -6,6 +6,7 @@ import {
   useSourceSearch, 
   useRecommendationMutations 
 } from "@hooks/useSourceRecommendations";
+import FollowSourceButton from "@components/atoms/buttons/FollowSourceButton/FollowSourceButton";
 import Loading from '@components/Loading/Loading';
 import "./UserRecommendedSources.css";
 
@@ -122,15 +123,11 @@ const UserRecommendedSources = ({ profileUserId }) => {
                 {followSource.isPending ? (
                   <Loading size="small" />
                 ) : (
-                  <img
-                    className={`tidbits-follow-img ${userData?.sources?.includes(rec.source_id) ? "clicked" : ""}`}
-                    src={`/img/${userData?.sources?.includes(rec.source_id) 
-                      ? "following-source-img.svg" 
-                      : "follow-source-img.svg"}`}
-                    alt={userData?.sources?.includes(rec.source_id) 
-                      ? "unfollow source" 
-                      : "follow source"}
+                  <FollowSourceButton
+                    isFollowing={userData?.sources?.includes(rec.source_id)}
                     onClick={() => handleFollowSource(rec.source_id)}
+                    disabled={followSource.isPending}
+                    size="small"
                   />
                 )}
               </div>

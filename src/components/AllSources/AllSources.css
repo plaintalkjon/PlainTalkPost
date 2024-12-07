@@ -32,25 +32,6 @@
   flex-wrap: wrap;
 }
 
-.bias-filter,
-.publication-filter {
-
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: opacity 0.2s ease;
-  margin-bottom: 0.5rem;
-}
-
-.bias-filter:hover,
-.publication-filter:hover {
-  opacity: 0.8;
-}
-
-.bias-filter.active,
-.publication-filter.active {
-  font-weight: bold;
-}
-
 /* Bias filter colors */
 
 .sources-grid {
@@ -60,7 +41,6 @@
 }
 
 .source-card {
-
   padding-left: 1rem;
 }
 
@@ -88,40 +68,4 @@
 
 .source-card .source-link:hover {
   color: var(--link-hover-color);
-}
-
-#bias-filter-all::before {
-  content: url("/img/bias-filter-all-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 12px;
-  vertical-align: middle;
-  margin-left: 0px;
-  padding-left: 0px;
-}
-
-
-#publication-filter-all::before {
-  content: url("/img/publication-filter-all-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#publication-filter-indie::before {
-  content: url("/img/publication-filter-indie-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#publication-filter-mainstream::before {
-  content: url("/img/publication-filter-mainstream-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
 }

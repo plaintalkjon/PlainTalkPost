@@ -1,6 +1,7 @@
 // src/components/ContentFilters/ContentFilters.jsx
 import React, { useState } from "react";
 import { useContentFilters } from "@hooks/useContentFilters";
+import FilterContentButton from '@components/atoms/buttons/FilterContentButton/FilterContentButton';
 import "./ContentFilters.css";
 
 const ContentFilters = () => {
@@ -13,7 +14,6 @@ const ContentFilters = () => {
 
   return (
     <>
-
       <div id="filters-container" className={isOpen ? 'active' : ''}>
         <button className="filters-close-button" onClick={toggleFilters}>
           ×
@@ -22,194 +22,171 @@ const ContentFilters = () => {
         <div id="sort-filter" className="filter-section">
           <h5>Sort By</h5>
           <div className="sorting">
-            <button
+            <FilterContentButton
               onClick={() => updateFilter("sort", "trending")}
               id="sort-filter-trending"
-              className={`sorting-link trending ${
-                filters.sort === "trending" ? "active" : ""
-              }`}
+              isActive={filters.sort === "trending"}
+              className="trending"
             >
               Trending
-            </button>
-            <button
+            </FilterContentButton>
+            <FilterContentButton
               onClick={() => updateFilter("sort", "latest")}
               id="sort-filter-latest"
-              className={`sorting-link latest ${
-                filters.sort === "latest" ? "active" : ""
-              }`}
+              isActive={filters.sort === "latest"}
+              className="latest"
             >
               Latest
-            </button>
+            </FilterContentButton>
           </div>
         </div>
 
         <div id="media-filter" className="filter-section">
           <h5>Media Type</h5>
-          <button
+          <FilterContentButton
             onClick={() => updateFilter("mediaType", null)}
             id="media-filter-all"
-            className={`media-link ${
-              filters.mediaType === null ? "active" : ""
-            }`}
+            isActive={filters.mediaType === null}
           >
             All Media
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("mediaType", "Article")}
             id="media-filter-article"
-            className={`media-link ${
-              filters.mediaType === "Article" ? "active" : ""
-            }`}
+            isActive={filters.mediaType === "Article"}
           >
             Articles
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("mediaType", "Video")}
             id="media-filter-videos"
-            className={`media-link ${
-              filters.mediaType === "Video" ? "active" : ""
-            }`}
+            isActive={filters.mediaType === "Video"}
           >
             Videos
-          </button>
+          </FilterContentButton>
         </div>
 
         <div id="bias-filter" className="filter-section">
           <h5>Political Bias</h5>
-          <button
+          <FilterContentButton
             onClick={() => updateFilter("bias", null)}
             id="bias-filter-all"
-            className={`filter-link balanced ${
-              filters.bias === null ? "active" : ""
-            }`}
+            isActive={filters.bias === null}
+            className="balanced"
           >
             All Bias
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("bias", "left")}
             id="bias-filter-left"
-            className={`filter-link left ${
-              filters.bias === "left" ? "active" : ""
-            }`}
+            isActive={filters.bias === "left"}
+            className="left"
           >
             Left
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("bias", "leanleft")}
             id="bias-filter-leanleft"
-            className={`filter-link leanleft ${
-              filters.bias === "leanleft" ? "active" : ""
-            }`}
+            isActive={filters.bias === "leanleft"}
+            className="leanleft"
           >
             Left Lean
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("bias", "center")}
             id="bias-filter-center"
-            className={`filter-link center ${
-              filters.bias === "center" ? "active" : ""
-            }`}
+            isActive={filters.bias === "center"}
+            className="center"
           >
             Center
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("bias", "leanright")}
             id="bias-filter-leanright"
-            className={`filter-link leanright ${
-              filters.bias === "leanright" ? "active" : ""
-            }`}
+            isActive={filters.bias === "leanright"}
+            className="leanright"
           >
             Right Lean
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("bias", "right")}
             id="bias-filter-right"
-            className={`filter-link right ${
-              filters.bias === "right" ? "active" : ""
-            }`}
+            isActive={filters.bias === "right"}
+            className="right"
           >
             Right
-          </button>
+          </FilterContentButton>
         </div>
 
         <div id="publication-filter" className="filter-section">
           <h5>Publications</h5>
-          <button
+          <FilterContentButton
             onClick={() => updateFilter("publication", null)}
             id="publication-filter-all"
-            className={`publications-link all ${
-              filters.publication === null ? "active" : ""
-            }`}
-          >
+            isActive={filters.publication === null}
+         >
             All
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("publication", "Indie")}
             id="publication-filter-indie"
-            className={`publications-link indie ${
-              filters.publication === "Indie" ? "active" : ""
-            }`}
+            isActive={filters.publication === "Indie"}
+            className="indie"
           >
             Indie
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("publication", "Mainstream")}
             id="publication-filter-mainstream"
-            className={`publications-link mainstream ${
-              filters.publication === "Mainstream" ? "active" : ""
-            }`}
+            isActive={filters.publication === "Mainstream"}
+            className="mainstream"
           >
             Mainstream
-          </button>
+          </FilterContentButton>
         </div>
 
         <div id="category-filter" className="filter-section">
           <h5>Categories</h5>
-          <button
+          <FilterContentButton
             onClick={() => updateFilter("category", null)}
             id="category-filter-all"
-            className={`categories-link all-categories ${
-              filters.category === null ? "active" : ""
-            }`}
+            isActive={filters.category === null}
+            className="all-categories"
           >
             All
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("category", "Politics & Policy")}
             id="category-filter-politics"
-            className={`categories-link politics ${
-              filters.category === "Politics & Policy" ? "active" : ""
-            }`}
+            isActive={filters.category === "Politics & Policy"}
+            className="politics"
           >
             Politics & Policy
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("category", "Economy & Business")}
             id="category-filter-economy"
-            className={`categories-link economy ${
-              filters.category === "Economy & Business" ? "active" : ""
-            }`}
+            isActive={filters.category === "Economy & Business"}
+            className="economy"
           >
             Economy & Business
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("category", "International")}
             id="category-filter-international"
-            className={`categories-link international ${
-              filters.category === "International" ? "active" : ""
-            }`}
+            isActive={filters.category === "International"}
+            className="international"
           >
             International
-          </button>
-          <button
+          </FilterContentButton>
+          <FilterContentButton
             onClick={() => updateFilter("category", "Tech & Science")}
             id="category-filter-tech"
-            className={`categories-link tech-categories ${
-              filters.category === "Tech & Science" ? "active" : ""
-            }`}
+            isActive={filters.category === "Tech & Science"}
+            className="tech-categories"
           >
             Tech & Science
-          </button>
+          </FilterContentButton>
         </div>
       </div>
     </>

@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "@contexts/AuthContext";
 import { useContentOperations } from "@hooks/useContentOperations";
+import FollowSourceButton from "@components/atoms/buttons/FollowSourceButton/FollowSourceButton";
 import Loading from "@components/Loading/Loading";
 import "./StarterPacksSources.css";
 
@@ -60,40 +61,33 @@ const StarterPacksSources = () => {
       </p>
       
       <div className="starter-packs-grid">
-        {starterPacks.map((pack) => {
-          
-          return (
-            <div key={pack.id} className="starter-pack-card">
-              <h3>{pack.name}</h3>
-              <p>{pack.description}</p>
-              <ul className="source-list">
-                {pack.sources.map((source) => (
-                  <li key={source.source_id} className={`source-item ${source.political_bias}`}>
-                    <span className="source-name">{source.name}</span>
-                    {user && (
-                      <div className="follow-button-container">
-                        {followSource.isPending ? (
-                          <Loading size="small" />
-                        ) : (
-                          <img
-                            className={`tidbits-follow-img ${userData?.sources?.includes(source.source_id) ? "clicked" : ""}`}
-                            src={`/img/${userData?.sources?.includes(source.source_id) 
-                              ? "following-source-img.svg" 
-                              : "follow-source-img.svg"}`}
-                            alt={userData?.sources?.includes(source.source_id) 
-                              ? "unfollow source" 
-                              : "follow source"}
-                            onClick={() => handleFollowSource(source.source_id)}
-                          />
-                        )}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        })}
+        {starterPacks.map((pack) => (
+          <div key={pack.id} className="starter-pack-card">
+            <h3>{pack.name}</h3>
+            <p>{pack.description}</p>
+            <ul className="source-list">
+              {pack.sources.map((source) => (
+                <li key={source.source_id} className={`source-item ${source.political_bias}`}>
+                  <span className="source-name">{source.name}</span>
+                  {user && (
+                    <div className="follow-button-container">
+                      {followSource.isPending ? (
+                        <Loading size="small" />
+                      ) : (
+                        <FollowSourceButton
+                          isFollowing={userData?.sources?.includes(source.source_id)}
+                          onClick={() => handleFollowSource(source.source_id)}
+                          disabled={followSource.isPending}
+                          size="small"
+                        />
+                      )}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
   );

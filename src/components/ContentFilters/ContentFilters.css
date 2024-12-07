@@ -13,21 +13,12 @@ button {
   white-space: nowrap; /* Prevent text from wrapping within the button */
 }
 
+.active {
+    font-weight: bold;
+  }
+
+
 #filters-container {
-  margin: 0px 0px 10px 10px;
-  color: var(--text-color);
-  min-width: 125px;
-  position: fixed;
-  top: 0;
-  right: -100%;
-  width: 80%;
-  max-width: 300px;
-  height: 100%;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  transition: right 0.3s ease;
-  z-index: 1000;
-  overflow-y: auto;
-  padding: 1rem;
   background-color: var(--background-color);
 }
 
@@ -44,181 +35,12 @@ button {
   margin-left: 8px;
 }
 
-.filter-link,
-.publications-link,
-.sorting-link,
-.categories-link,
-.search-link,
-.media-link {
-  display: block;
-  font-size: 14px;
-  text-decoration: none;
-  margin-bottom: 5px;
-}
-
-.filter-link.active,
-.publications-link.active,
-.sorting-link.active,
-.categories-link.active,
-.search-link.active,
-.auth-link.active,
-.media-link.active {
-  font-weight: bold;
-}
-
-/* Borders for Bias Filters */
-
-#bias-filter-left {
-  border-left: 4px solid var(--left-bias-color);
-  border-radius: 5px;
-}
-
-#bias-filter-leanleft {
-  border-left: 4px solid var(--leanleft-bias-color);
-  border-radius: 5px;
-}
-
-#bias-filter-center {
-  border-left: 4px solid var(--center-bias-color);
-  border-radius: 5px;
-}
-
-#bias-filter-leanright {
-  border-left: 4px solid var(--leanright-bias-color);
-  border-radius: 5px;
-}
-
-#bias-filter-right {
-  border-left: 4px solid var(--right-bias-color);
-  border-radius: 5px;
-}
-
-#bias-filter-all {
-  margin-left: 0px;
-  padding-left: 2px;
-}
-
-#bias-filter-all::before {
-  content: url("/img/bias-filter-all-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 12px;
-  vertical-align: middle;
-  margin-left: 0px;
-  padding-left: 0px;
-}
 
 /* Accent Color for Active Links */
 .active {
   color: var(--accent-color);
 }
 
-/* Images for Filters with IDs */
-
-#media-filter-all::before {
-  content: url("/img/media-filter-all-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#media-filter-article::before {
-  content: url("/img/media-filter-content-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#media-filter-videos::before {
-  content: url("/img/media-filter-videos-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#publication-filter-all::before {
-  content: url("/img/publication-filter-all-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#publication-filter-indie::before {
-  content: url("/img/publication-filter-indie-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#publication-filter-mainstream::before {
-  content: url("/img/publication-filter-mainstream-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#sort-filter-trending::before {
-  content: url("/img/trending.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#sort-filter-latest::before {
-  content: url("/img/sort-filter-latest-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#category-filter-all::before {
-  content: url("/img/category-filter-all-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#category-filter-politics::before {
-  content: url("/img/category-filter-politics-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#category-filter-economy::before {
-  content: url("/img/category-filter-economy-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#category-filter-international::before {
-  content: url("/img/category-filter-international-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
-
-#category-filter-tech::before {
-  content: url("/img/category-filter-tech-img.svg");
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-  width: 14px;
-}
 
 @media (min-width: 768px) {
   #filters-container {
@@ -264,3 +86,5 @@ button {
     z-index: 1001;
   }
 }
+
+

@@ -1,0 +1,40 @@
+.follow-source-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 4px;
+  }
+  
+  .follow-source-button:hover {
+    opacity: 0.8;
+  }
+  
+  .follow-source-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .follow-source-button img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Size variants */
+  .follow-source-button.small img {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .follow-source-button.medium img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .follow-source-button.large img {
+    width: 24px;
+    height: 24px;
+  }
