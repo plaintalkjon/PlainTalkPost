@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@contexts/AuthContext";
 import { useContentOperations } from "@hooks/useContentOperations";
 import Comments from "@components/Comments/Comments";
 import "./ContentCard.css";
 
-const ContentCard = ({ content }) => {
+const ContentCard = React.memo(({ content }) => {
   const { user, userProfile, userData } = useAuth();
   const { followSource, upvoteContent, addComment } = useContentOperations(
     content.content_id
@@ -13,21 +13,33 @@ const ContentCard = ({ content }) => {
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [showVideo, setShowVideo] = useState(false);
+  const [localIsFollowing, setLocalIsFollowing] = useState(
+    userData?.sources?.includes(content.source_id) || false
+  );
+  const [localIsUpvoted, setLocalIsUpvoted] = useState(
+    userData?.upvotes?.includes(content.content_id) || false
+  );
+  const [localUpvoteCount, setLocalUpvoteCount] = useState(content.upvotes || 0);
 
-  const isFollowing = userData?.sources?.includes(content.source_id) || false;
-  const isUpvoted = userData?.upvotes?.includes(content.content_id) || false;
+  useEffect(() => {
+    setLocalIsFollowing(userData?.sources?.includes(content.source_id) || false);
+    setLocalIsUpvoted(userData?.upvotes?.includes(content.content_id) || false);
+  }, [userData?.sources, content.source_id, userData?.upvotes, content.content_id]);
 
-  const handleFollowClick = () => {
+  const handleFollowClick = useCallback(() => {
     if (!user) return;
+    setLocalIsFollowing(!localIsFollowing);
     followSource.mutate({ userId: user.id, sourceId: content.source_id });
-  };
+  }, [user, followSource, content.source_id,localIsFollowing]);
 
-  const handleUpvoteClick = () => {
+  const handleUpvoteClick = useCallback(() => {
     if (!user) return;
+    setLocalIsUpvoted(!localIsUpvoted);
+    setLocalUpvoteCount(prev => prev + (localIsUpvoted ? -1 : 1));
     upvoteContent.mutate({ userId: user.id, contentId: content.content_id });
-  };
+  }, [user, upvoteContent, content.content_id, localIsUpvoted]);
 
-  const handleSubmitComment = () => {
+  const handleSubmitComment = useCallback(() => {
     if (!newComment.trim() || !userProfile) return;
 
     addComment.mutate(
@@ -44,7 +56,7 @@ const ContentCard = ({ content }) => {
         },
       }
     );
-  };
+  }, [user, newComment, userProfile, content.content_id, addComment]);
 
   if (!content) return null;
 
@@ -112,8 +124,8 @@ const ContentCard = ({ content }) => {
               disabled={upvoteContent.isPending}
             >
               <img
-                src={`/img/${isUpvoted ? "upvoted-img.png" : "upvote-img.png"}`}
-                alt={isUpvoted ? "Remove upvote" : "Upvote"}
+                src={`/img/${localIsUpvoted ? "upvoted-img.png" : "upvote-img.png"}`}
+                alt={localIsUpvoted ? "Remove upvote" : "Upvote"}
               />
             </button>
           </div>
@@ -134,16 +146,20 @@ const ContentCard = ({ content }) => {
         {/* Source name and follow button */}
         <div className="tidbits">
           {user && (
-            <img
-              className={`tidbits-follow-img ${isFollowing ? "clicked" : ""}`}
-              src={`/img/${
-                isFollowing
-                  ? "following-source-img.svg"
-                  : "follow-source-img.svg"
-              }`}
-              alt={isFollowing ? "Unfollow source" : "Follow source"}
+            <button
+              className="tidbits-button-follow"
               onClick={handleFollowClick}
-            />
+              disabled={followSource.isPending}
+            >
+              <img
+                src={`/img/${
+                  localIsFollowing
+                    ? "following-source-img.svg"
+                    : "follow-source-img.svg"
+                }`}
+                alt={localIsFollowing ? "Unfollow source" : "Followsource"}
+              />
+            </button>
           )}
           <a
             href={`/source/${content.source?.source_id}`}
@@ -181,6 +197,12 @@ const ContentCard = ({ content }) => {
       <Comments contentId={content.content_id} />
     </div>
   );
-};
+});
 
-export default ContentCard;
+export default React.memo(ContentCard, (prevProps, nextProps) => {
+  return (
+    prevProps.content.content_id ===nextProps.content.content_id &&
+    prevProps.content.upvotes === nextProps.content.upvotes &&
+    prevProps.content.comments === nextProps.content.comments
+  );
+});

@@ -11,7 +11,8 @@ export const useContentOperations = (contentId) => {
     mutationFn: ({ userId, sourceId }) => toggleFollowSource(userId, sourceId),
     onMutate: async ({ sourceId }) => {
       await queryClient.cancelQueries(['userData']);
-      const previousData = queryClient.getQueryData(['userData']);
+      
+      const previousUserData = queryClient.getQueryData(['userData']);
       
       queryClient.setQueryData(['userData'], old => ({
         ...old,
@@ -20,25 +21,27 @@ export const useContentOperations = (contentId) => {
           : [...(old?.sources || []), sourceId]
       }));
 
-      return { previousData };
+      return { previousUserData };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['userData'], context.previousData);
+      queryClient.setQueryData(['userData'], context.previousUserData);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries(['userData']);
+    onSuccess: () => {
+      // Instead of invalidating, we'll rely on our optimistic update
+      // queryClient.invalidateQueries(['userData']); // Remove this line
     }
   });
 
-  const upvoteContentMutation = useMutation({
+  const upvoteContent = useMutation({
     mutationFn: ({ userId, contentId }) => upvoteContentService(userId, contentId),
     onMutate: async ({ contentId }) => {
+      // Cancel any outgoing refetches
       await queryClient.cancelQueries(['userData']);
-      await queryClient.cancelQueries(['content', contentId]);
       
+      // Snapshot the previous values
       const previousUserData = queryClient.getQueryData(['userData']);
-      const previousContent = queryClient.getQueryData(['content', contentId]);
-
+      
+      // Optimistically update userData
       queryClient.setQueryData(['userData'], old => ({
         ...old,
         upvotes: old?.upvotes?.includes(contentId)
@@ -46,20 +49,16 @@ export const useContentOperations = (contentId) => {
           : [...(old?.upvotes || []), contentId]
       }));
 
-      queryClient.setQueryData(['content', contentId], old => ({
-        ...old,
-        upvotes: old?.upvotes + (previousUserData?.upvotes?.includes(contentId) ? -1 : 1)
-      }));
-
-      return { previousUserData, previousContent };
+      // Return context with the snapshotted value
+      return { previousUserData };
     },
     onError: (_, __, context) => {
+      // If mutation fails, use the context to roll back
       queryClient.setQueryData(['userData'], context.previousUserData);
-      queryClient.setQueryData(['content', contentId], context.previousContent);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries(['userData']);
-      queryClient.invalidateQueries(['content', contentId]);
+    onSuccess: () => {
+      // Rely on optimistic update instead of invalidating
+      // queryClient.invalidateQueries(['userData']); // Remove this line
     }
   });
 
@@ -73,7 +72,7 @@ export const useContentOperations = (contentId) => {
 
   return {
     followSource,
-    upvoteContent: upvoteContentMutation,
+    upvoteContent,
     addComment: addCommentMutation
   };
 }

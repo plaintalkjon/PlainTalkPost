@@ -52,7 +52,7 @@ const ContentFilters = () => {
               filters.mediaType === "Article" ? "active" : ""
             }`}
           >
-            Content
+            Articles
           </button>
           <button
             onClick={() => updateFilter("mediaType", "Video")}
