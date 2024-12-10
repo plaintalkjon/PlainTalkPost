@@ -111,6 +111,6 @@
 }
 
 /* Because I'm using borders, not images, I need to add a margin to the left of the button to make inline*/
-.left, .leanleft, .center, .leanright, .right {
+.left, .leanleft, .center, .leanright, .right, .substack {
   margin-left: 23px;
 }
